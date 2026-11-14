@@ -58,12 +58,7 @@ function MissionPanel({ mission }: MissionPanelProps) {
               aria-valuenow={currentStepIndex + 1}
               aria-valuetext={`Paso ${currentStepIndex + 1} de ${mission.steps.length}`}
             >
-              {mission.steps.map((step, index) => (
-                <span
-                  className={index <= currentStepIndex ? 'mission-step-progress--active' : ''}
-                  key={step.id}
-                />
-              ))}
+              <span style={{ width: `${((currentStepIndex + 1) / mission.steps.length) * 100}%` }} />
             </div>
             <div className="mission-step-navigation">
               <button

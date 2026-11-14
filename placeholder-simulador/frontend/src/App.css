@@ -386,19 +386,17 @@
 }
 
 .mission-step-progress {
-  display: flex;
-  gap: 5px;
-  margin-top: 20px;
-}
-
-.mission-step-progress span {
   height: 4px;
-  flex: 1;
+  margin-top: 20px;
+  overflow: hidden;
   background: #39402d;
 }
 
-.mission-step-progress span.mission-step-progress--active {
+.mission-step-progress span {
+  display: block;
+  height: 100%;
   background: #c4ff00;
+  transition: width 180ms ease;
 }
 
 .mission-step-navigation {
