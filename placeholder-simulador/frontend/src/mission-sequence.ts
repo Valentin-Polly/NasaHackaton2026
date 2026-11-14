@@ -1,7 +1,16 @@
+import type { CelestialMarkerLocation } from './celestial-marker-types'
+import type { PhotoGalleryData } from './gallery-data'
+import { apollo11FloridaGallery, apollo11MoonGallery } from './gallery-data'
+
 export type MissionStep = {
   id: string
   title: string
   description: string
+  marker: {
+    location: CelestialMarkerLocation
+    label: string
+    gallery: PhotoGalleryData
+  }
 }
 
 export type MissionDefinition = {
@@ -14,39 +23,45 @@ export type MissionDefinition = {
   steps: [MissionStep, ...MissionStep[]]
 }
 
+const lunarMarkerCoordinates = {
+  selenographicLatitude: -15 + Math.random() * 30,
+  selenographicLongitude: -120 + Math.random() * 60,
+}
+
 export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
   {
-    id: 'mission-01',
+    id: 'apollo-11',
     sequence: '01',
-    protocol: 'PROTOCOLO / LUNAR-07',
-    summary: 'Investiga una señal irregular detectada cerca de la Luna y determina su posible origen.',
+    protocol: 'MISIÓN / APOLLO 11',
+    summary: 'Sigue la misión desde su punto de lanzamiento en Florida hasta una zona de exploración lunar.',
     status: 'EN ESPERA',
-    sector: 'ÓRBITA LUNAR',
+    sector: 'TIERRA → LUNA',
     steps: [
       {
-        id: 'detect-signal',
-        title: 'Detectar la señal',
-        description: 'Ubica la Luna y confirma visualmente la zona desde donde se origina la señal.',
+        id: 'florida-launch',
+        title: 'Punto de lanzamiento',
+        description: 'Explora el sitio de lanzamiento de Apollo 11 en Florida.',
+        marker: {
+          location: {
+            body: 'earth',
+            coordinates: { latitude: 28.5729, longitude: -80.649 },
+          },
+          label: 'Abrir galería placeholder de Apollo 11 en Florida',
+          gallery: apollo11FloridaGallery,
+        },
       },
       {
-        id: 'approach-moon',
-        title: 'Aproximación lunar',
-        description: 'Acércate a la superficie lunar para observar los detalles del área.',
-      },
-      {
-        id: 'analyze-origin',
-        title: 'Analizar el origen',
-        description: 'Compara la dirección de la señal con el relieve y registra una posible fuente.',
-      },
-      {
-        id: 'check-solar-activity',
-        title: 'Verificar actividad solar',
-        description: 'Observa el Sol y descarta una interferencia causada por actividad solar.',
-      },
-      {
-        id: 'close-report',
-        title: 'Cerrar el informe',
-        description: 'Resume el hallazgo y confirma el cierre del protocolo de exploración.',
+        id: 'lunar-exploration',
+        title: 'Exploración lunar',
+        description: 'Continúa hacia un punto placeholder elegido al azar sobre la superficie lunar.',
+        marker: {
+          location: {
+            body: 'moon',
+            coordinates: lunarMarkerCoordinates,
+          },
+          label: 'Abrir galería placeholder de la Luna',
+          gallery: apollo11MoonGallery,
+        },
       },
     ],
   },

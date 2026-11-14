@@ -5,11 +5,14 @@ import { DepthOfField, EffectComposer } from '@react-three/postprocessing'
 import { SRGBColorSpace, Vector3 } from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import CelestialMarker from './CelestialMarker'
+import type { CelestialMarkerLocation } from './celestial-marker-types'
 import MissionPanel from './MissionPanel'
 import PhotoGallery from './PhotoGallery'
-import { washingtonGallery } from './gallery-data'
+import type { PhotoGalleryData } from './gallery-data'
 import { missionSequence } from './mission-sequence'
 import './App.css'
+
+type Position = [number, number, number]
 
 type CameraFocusTarget = {
   position: [number, number, number]
@@ -17,7 +20,21 @@ type CameraFocusTarget = {
   minDistance: number
 }
 
-const SUN_POSITION: [number, number, number] = [-12, 5, -14]
+const EARTH_POSITION: Position = [0, 0, 0]
+const EARTH_RADIUS = 1.5
+const MOON_POSITION: Position = [7.5, 0, 0]
+const MOON_RADIUS = 0.375
+const SUN_POSITION: Position = [-12, 5, -14]
+const SUN_RADIUS = 7.5
+const CELESTIAL_BODY_SURFACES: Record<
+  CelestialMarkerLocation['body'],
+  { center: Position; radius: number }
+> = {
+  earth: { center: EARTH_POSITION, radius: EARTH_RADIUS },
+  moon: { center: MOON_POSITION, radius: MOON_RADIUS },
+  sun: { center: SUN_POSITION, radius: SUN_RADIUS },
+}
+
 function Skybox() {
   const { scene } = useGLTF('/billions_stars_skybox_hdri_panorama.glb')
   return <primitive object={scene} scale={100} />
@@ -44,7 +61,7 @@ function Earth({ onSelect, onHoverChange }: BodyInteractionProps) {
       }}
       onPointerOut={() => onHoverChange(false)}
     >
-      <sphereGeometry args={[1.5, 64, 64]} />
+      <sphereGeometry args={[EARTH_RADIUS, 64, 64]} />
       <meshStandardMaterial
         map={texture}
         emissive="#ffffff"
@@ -61,7 +78,7 @@ function Moon({ onSelect, onHoverChange }: BodyInteractionProps) {
 
   return (
     <mesh
-      position={[7.5, 0, 0]}
+      position={MOON_POSITION}
       onClick={(event) => {
         event.stopPropagation()
         onSelect()
@@ -72,7 +89,7 @@ function Moon({ onSelect, onHoverChange }: BodyInteractionProps) {
       }}
       onPointerOut={() => onHoverChange(false)}
     >
-      <sphereGeometry args={[0.375, 48, 48]} />
+      <sphereGeometry args={[MOON_RADIUS, 48, 48]} />
       <meshStandardMaterial map={texture} roughness={1} />
     </mesh>
   )
@@ -95,7 +112,7 @@ function Sun({ onSelect, onHoverChange }: BodyInteractionProps) {
       }}
       onPointerOut={() => onHoverChange(false)}
     >
-      <sphereGeometry args={[7.5, 64, 64]} />
+      <sphereGeometry args={[SUN_RADIUS, 64, 64]} />
       <meshBasicMaterial map={texture} />
     </mesh>
   )
@@ -153,8 +170,16 @@ function App() {
   const [started, setStarted] = useState(false)
   const [cameraFocus, setCameraFocus] = useState<CameraFocusTarget | null>(null)
   const [hoveringBody, setHoveringBody] = useState(false)
-  const [galleryOpen, setGalleryOpen] = useState(false)
+  const [currentStepIndex, setCurrentStepIndex] = useState(0)
+  const [activeGallery, setActiveGallery] = useState<PhotoGalleryData | null>(null)
   const mission = missionSequence[0]
+  const activeMarker = mission.steps[currentStepIndex].marker
+  const markerSurface = CELESTIAL_BODY_SURFACES[activeMarker.location.body]
+
+  const handleStepChange = (index: number) => {
+    setCurrentStepIndex(index)
+    setActiveGallery(null)
+  }
 
   return (
     <main className="scene">
@@ -180,19 +205,20 @@ function App() {
           <ambientLight intensity={1} />
           <pointLight position={SUN_POSITION} color="#fff1d6" intensity={500} decay={2} />
           <Earth
-            onSelect={() => setCameraFocus({ position: [0, 0, 0], distance: 5.6, minDistance: 2 })}
+            onSelect={() => setCameraFocus({ position: EARTH_POSITION, distance: 5.6, minDistance: 2 })}
             onHoverChange={setHoveringBody}
           />
-          <CelestialMarker
-            body="earth"
-            center={[0, 0, 0]}
-            radius={1.5}
-            coordinates={{ latitude: 38.9072, longitude: -77.0369 }}
-            label="Abrir galería de Washington, D. C."
-            onActivate={() => setGalleryOpen(true)}
-          />
+          {started && (
+            <CelestialMarker
+              {...activeMarker.location}
+              center={markerSurface.center}
+              radius={markerSurface.radius}
+              label={activeMarker.label}
+              onActivate={() => setActiveGallery(activeMarker.gallery)}
+            />
+          )}
           <Moon
-            onSelect={() => setCameraFocus({ position: [7.5, 0, 0], distance: 3, minDistance: 2 })}
+            onSelect={() => setCameraFocus({ position: MOON_POSITION, distance: 3, minDistance: 2 })}
             onHoverChange={setHoveringBody}
           />
           <Sun
@@ -240,12 +266,19 @@ function App() {
         </section>
       )}
 
-      {started && <MissionPanel mission={mission} />}
+      {started && (
+        <MissionPanel
+          mission={mission}
+          currentStepIndex={currentStepIndex}
+          onStepChange={handleStepChange}
+        />
+      )}
 
-      {galleryOpen && (
+      {activeGallery && (
         <PhotoGallery
-          gallery={washingtonGallery}
-          onClose={() => setGalleryOpen(false)}
+          key={activeGallery.title}
+          gallery={activeGallery}
+          onClose={() => setActiveGallery(null)}
         />
       )}
 

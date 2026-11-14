@@ -2,40 +2,17 @@ import { useRef } from 'react'
 import { Html } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { MathUtils, Vector3 } from 'three'
+import type { CelestialMarkerLocation } from './celestial-marker-types'
 import { CelestialMarkerIcon, EarthMarkerIcon } from './mission-marker-icons'
 
 type Position = [number, number, number]
-
-type EarthMarkerLocation = {
-  body: 'earth'
-  coordinates: {
-    latitude: number
-    longitude: number
-  }
-}
-
-type MoonMarkerLocation = {
-  body: 'moon'
-  coordinates: {
-    selenographicLatitude: number
-    selenographicLongitude: number
-  }
-}
-
-type SunMarkerLocation = {
-  body: 'sun'
-  coordinates: {
-    heliographicLatitude: number
-    heliographicLongitude: number
-  }
-}
 
 type CelestialMarkerProps = {
   center: Position
   radius: number
   label: string
   onActivate: () => void
-} & (EarthMarkerLocation | MoonMarkerLocation | SunMarkerLocation)
+} & CelestialMarkerLocation
 
 function CelestialMarker(props: CelestialMarkerProps) {
   const markerElement = useRef<HTMLButtonElement>(null)

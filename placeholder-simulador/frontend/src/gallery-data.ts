@@ -8,20 +8,30 @@ export type PhotoGalleryData = {
   photos: GalleryPhoto[]
 }
 
-export const washingtonGallery: PhotoGalleryData = {
-  title: 'WASHINGTON, D.C.',
+export const apollo11FloridaGallery: PhotoGalleryData = {
+  title: 'APOLLO 11 / FLORIDA',
   photos: [
     {
       src: '/earth-blue-marble.png',
-      alt: 'Imagen temporal de la Tierra para probar la galería',
+      alt: 'Imagen placeholder para el sitio de lanzamiento en Florida',
     },
     {
       src: '/lroc_color_2k.jpg',
-      alt: 'Imagen temporal de la Luna',
+      alt: 'Imagen placeholder de la Luna',
     },
     {
       src: '/euvi_aia304_2012_carrington_print.jpg',
-      alt: 'Imagen temporal del Sol',
+      alt: 'Imagen placeholder del Sol',
+    },
+  ],
+}
+
+export const apollo11MoonGallery: PhotoGalleryData = {
+  title: 'APOLLO 11 / LUNA',
+  photos: [
+    {
+      src: '/lroc_color_2k.jpg',
+      alt: 'Imagen placeholder de la superficie lunar',
     },
   ],
 }

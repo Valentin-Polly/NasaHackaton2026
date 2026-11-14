@@ -3,17 +3,17 @@ import type { MissionDefinition } from './mission-sequence'
 
 type MissionPanelProps = {
   mission: MissionDefinition
+  currentStepIndex: number
+  onStepChange: (index: number) => void
 }
 
-function MissionPanel({ mission }: MissionPanelProps) {
+function MissionPanel({ mission, currentStepIndex, onStepChange }: MissionPanelProps) {
   const [sidebarVisible, setSidebarVisible] = useState(true)
-  const [stepSelection, setStepSelection] = useState({ missionId: mission.id, index: 0 })
-  const currentStepIndex = stepSelection.missionId === mission.id ? stepSelection.index : 0
   const currentStep = mission.steps[currentStepIndex]
   const isLastStep = currentStepIndex === mission.steps.length - 1
 
   const selectStep = (index: number) => {
-    setStepSelection({ missionId: mission.id, index })
+    onStepChange(index)
   }
 
   return (
