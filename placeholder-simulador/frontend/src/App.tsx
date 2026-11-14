@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import type { RefObject } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, useGLTF, useTexture } from '@react-three/drei'
 import { DepthOfField, EffectComposer } from '@react-three/postprocessing'
 import { SRGBColorSpace, Vector3 } from 'three'
+import type { Mesh } from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import CelestialMarker from './CelestialMarker'
 import type { CelestialMarkerLocation } from './celestial-marker-types'
@@ -44,14 +46,16 @@ function Skybox() {
 type BodyInteractionProps = {
   onSelect: () => void
   onHoverChange: (hovering: boolean) => void
+  meshRef: RefObject<Mesh>
 }
 
-function Earth({ onSelect, onHoverChange }: BodyInteractionProps) {
+function Earth({ onSelect, onHoverChange, meshRef }: BodyInteractionProps) {
   const texture = useTexture('/earth-blue-marble.png')
   texture.colorSpace = SRGBColorSpace
 
   return (
     <mesh
+      ref={meshRef}
       onClick={(event) => {
         event.stopPropagation()
         onSelect()
@@ -73,12 +77,13 @@ function Earth({ onSelect, onHoverChange }: BodyInteractionProps) {
   )
 }
 
-function Moon({ onSelect, onHoverChange }: BodyInteractionProps) {
+function Moon({ onSelect, onHoverChange, meshRef }: BodyInteractionProps) {
   const texture = useTexture('/lroc_color_2k.jpg')
   texture.colorSpace = SRGBColorSpace
 
   return (
     <mesh
+      ref={meshRef}
       position={MOON_POSITION}
       onClick={(event) => {
         event.stopPropagation()
@@ -96,12 +101,13 @@ function Moon({ onSelect, onHoverChange }: BodyInteractionProps) {
   )
 }
 
-function Sun({ onSelect, onHoverChange }: BodyInteractionProps) {
+function Sun({ onSelect, onHoverChange, meshRef }: BodyInteractionProps) {
   const texture = useTexture('/euvi_aia304_2012_carrington_print.jpg')
   texture.colorSpace = SRGBColorSpace
 
   return (
     <mesh
+      ref={meshRef}
       position={SUN_POSITION}
       onClick={(event) => {
         event.stopPropagation()
@@ -173,12 +179,22 @@ function App() {
   const [hoveringBody, setHoveringBody] = useState(false)
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [activeGallery, setActiveGallery] = useState<PhotoGalleryData | null>(null)
+  const earthMeshRef = useRef<Mesh>(null!)
+  const moonMeshRef = useRef<Mesh>(null!)
+  const sunMeshRef = useRef<Mesh>(null!)
   const mission = missionSequence[0]
   const activeStep = mission.steps[currentStepIndex]
   const activeMarker = activeStep.marker
   const markerSurface = activeMarker
     ? CELESTIAL_BODY_SURFACES[activeMarker.location.body]
     : null
+  const markerOccluders = activeMarker
+    ? activeMarker.location.body === 'earth'
+      ? [moonMeshRef, sunMeshRef]
+      : activeMarker.location.body === 'moon'
+        ? [earthMeshRef, sunMeshRef]
+        : [earthMeshRef, moonMeshRef]
+    : []
 
   const handleStepChange = (index: number) => {
     setCurrentStepIndex(index)
@@ -209,6 +225,7 @@ function App() {
           <ambientLight intensity={1} />
           <pointLight position={SUN_POSITION} color="#fff1d6" intensity={500} decay={2} />
           <Earth
+            meshRef={earthMeshRef}
             onSelect={() => setCameraFocus({ position: EARTH_POSITION, distance: 5.6, minDistance: 2 })}
             onHoverChange={setHoveringBody}
           />
@@ -221,14 +238,17 @@ function App() {
               center={markerSurface.center}
               radius={markerSurface.radius}
               label={activeMarker.label}
+              occluders={markerOccluders}
               onActivate={() => setActiveGallery(activeMarker.gallery)}
             />
           )}
           <Moon
+            meshRef={moonMeshRef}
             onSelect={() => setCameraFocus({ position: MOON_POSITION, distance: 3, minDistance: 2 })}
             onHoverChange={setHoveringBody}
           />
           <Sun
+            meshRef={sunMeshRef}
             onSelect={() => setCameraFocus({ position: SUN_POSITION, distance: 22.5, minDistance: 8 })}
             onHoverChange={setHoveringBody}
           />

@@ -1,5 +1,7 @@
+import type { RefObject } from 'react'
 import { Html } from '@react-three/drei'
 import { MathUtils, Vector3 } from 'three'
+import type { Object3D } from 'three'
 import type { CelestialMarkerLocation } from './celestial-marker-types'
 import { CelestialMarkerIcon, EarthMarkerIcon } from './mission-marker-icons'
 
@@ -10,6 +12,7 @@ type CelestialMarkerProps = {
   radius: number
   label: string
   onActivate: () => void
+  occluders: RefObject<Object3D>[]
 } & CelestialMarkerLocation
 
 function CelestialMarker(props: CelestialMarkerProps) {
@@ -37,7 +40,7 @@ function CelestialMarker(props: CelestialMarkerProps) {
   const Icon = props.body === 'earth' ? EarthMarkerIcon : CelestialMarkerIcon
 
   return (
-    <Html center position={position} zIndexRange={[2, 0]}>
+    <Html center occlude={props.occluders} position={position} zIndexRange={[2, 0]}>
       <button
         className="celestial-marker"
         type="button"
