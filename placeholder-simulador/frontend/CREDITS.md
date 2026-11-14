@@ -19,4 +19,21 @@ This asset is used as the scene's skybox. Attribution is provided in accordance 
 - **Project files:** `world.200402.3x5400x2700_geo.tif` and `earth-blue-marble.png`
 - **Modifications:** Converted from GeoTIFF to PNG for browser texture support.
 
-No NASA endorsement is implied.
+## Moon Texture — CGI Moon Kit
+
+- **Source:** NASA Scientific Visualization Studio
+- **Visualization:** Ernie Wright (STC)
+- **Scientific Contributor:** Noah Petro (NASA/GSFC)
+- **Data:** NASA Lunar Reconnaissance Orbiter (LROC & LOLA)
+- **Project file:** `lroc_color_2k.jpg`
+- **Source page:** [CGI Moon Kit](https://svs.gsfc.nasa.gov/4720/)
+
+## Sun Texture — Carrington Print
+
+- **Source:** NASA Jet Propulsion Laboratory (NASA JPL)
+- **Technical Support:** Marit Jentoft-Nilsen (Global Science and Technology, Inc.)
+- **Data:** NASA SDO/AIA and STEREO/EUVI
+- **Project file:** `euvi_aia304_2012_carrington_print.jpg`
+- **Source page:** [NASA SVS — Sun](https://svs.gsfc.nasa.gov/30362)
+
+This is an independent educational project using publicly available NASA visualization resources and scientific datasets. It is not officially endorsed by NASA.

@@ -12,6 +12,8 @@ type CameraFocusTarget = {
   minDistance: number
 }
 
+const SUN_POSITION: [number, number, number] = [-12, 5, -14]
+
 function Skybox() {
   const { scene } = useGLTF('/billions_stars_skybox_hdri_panorama.glb')
   return <primitive object={scene} scale={100} />
@@ -39,12 +41,20 @@ function Earth({ onSelect, onHoverChange }: BodyInteractionProps) {
       onPointerOut={() => onHoverChange(false)}
     >
       <sphereGeometry args={[1.5, 64, 64]} />
-      <meshStandardMaterial map={texture} />
+      <meshStandardMaterial
+        map={texture}
+        emissive="#ffffff"
+        emissiveMap={texture}
+        emissiveIntensity={0.004}
+      />
     </mesh>
   )
 }
 
 function Moon({ onSelect, onHoverChange }: BodyInteractionProps) {
+  const texture = useTexture('/lroc_color_2k.jpg')
+  texture.colorSpace = SRGBColorSpace
+
   return (
     <mesh
       position={[7.5, 0, 0]}
@@ -59,15 +69,18 @@ function Moon({ onSelect, onHoverChange }: BodyInteractionProps) {
       onPointerOut={() => onHoverChange(false)}
     >
       <sphereGeometry args={[0.375, 48, 48]} />
-      <meshStandardMaterial color="#c6c6c2" roughness={1} />
+      <meshStandardMaterial map={texture} roughness={1} />
     </mesh>
   )
 }
 
 function Sun({ onSelect, onHoverChange }: BodyInteractionProps) {
+  const texture = useTexture('/euvi_aia304_2012_carrington_print.jpg')
+  texture.colorSpace = SRGBColorSpace
+
   return (
     <mesh
-      position={[-12, 5, -14]}
+      position={SUN_POSITION}
       onClick={(event) => {
         event.stopPropagation()
         onSelect()
@@ -79,7 +92,7 @@ function Sun({ onSelect, onHoverChange }: BodyInteractionProps) {
       onPointerOut={() => onHoverChange(false)}
     >
       <sphereGeometry args={[7.5, 64, 64]} />
-      <meshBasicMaterial color="#ffb52e" />
+      <meshBasicMaterial map={texture} />
     </mesh>
   )
 }
@@ -145,7 +158,10 @@ function App() {
         className={`simulator ${started ? 'simulator--ready' : 'simulator--preview'}${hoveringBody ? ' simulator--body-hover' : ''}`}
         aria-hidden={!started}
       >
-        <Canvas camera={{ position: [3, 2.5, 4], fov: 45 }}>
+        <Canvas
+          camera={{ position: [3, 2.5, 4], fov: 45 }}
+          frameloop={started ? 'always' : 'demand'}
+        >
           <EffectComposer>
             {/* Cambia acá el enfoque, rango y fuerza del bokeh. */}
             <DepthOfField
@@ -156,8 +172,9 @@ function App() {
           </EffectComposer>
           <color attach="background" args={['#10131a']} />
           <Skybox />
-          <ambientLight intensity={1.5} />
-          <directionalLight position={[4, 5, 3]} intensity={3} />
+          {/* Ajusta estas intensidades: pointLight controla la luz del Sol y ambientLight el brillo de relleno. */}
+          <ambientLight intensity={1} />
+          <pointLight position={SUN_POSITION} color="#fff1d6" intensity={500} decay={2} />
           <Earth
             onSelect={() => setCameraFocus({ position: [0, 0, 0], distance: 5.6, minDistance: 2 })}
             onHoverChange={setHoveringBody}
@@ -167,7 +184,7 @@ function App() {
             onHoverChange={setHoveringBody}
           />
           <Sun
-            onSelect={() => setCameraFocus({ position: [-12, 5, -14], distance: 22.5, minDistance: 8 })}
+            onSelect={() => setCameraFocus({ position: SUN_POSITION, distance: 22.5, minDistance: 8 })}
             onHoverChange={setHoveringBody}
           />
           <SceneControls focus={cameraFocus} />
