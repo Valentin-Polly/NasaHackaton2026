@@ -3,17 +3,252 @@
   width: 100%;
   height: 100svh;
   overflow: hidden;
-  background: #10131a;
+  background: #050705;
+  color: #efffe0;
 }
 
-.scene canvas {
+.simulator {
+  position: absolute;
+  inset: 0;
+  transition:
+    filter 900ms ease,
+    transform 900ms ease;
+}
+
+.simulator--preview {
+  filter: blur(8px) brightness(0.45) saturate(0.65);
+  transform: scale(1.035);
+  pointer-events: none;
+}
+
+.simulator--ready {
+  filter: none;
+  transform: none;
+}
+
+.simulator canvas {
   display: block;
   cursor: grab;
   touch-action: none;
 }
 
-.scene canvas:active {
+.simulator canvas:active {
   cursor: grabbing;
+}
+
+.welcome {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 28px;
+  background-color: rgba(3, 5, 3, 0.72);
+  background-image:
+    linear-gradient(rgba(196, 255, 0, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196, 255, 0, 0.07) 1px, transparent 1px);
+  background-size: 38px 38px;
+}
+
+.welcome-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 740px);
+  padding: clamp(26px, 5.5vw, 56px);
+  border: 2px solid #c4ff00;
+  background: #c4ff00;
+  color: #080a05;
+  box-shadow: 12px 12px 0 #f4f4ec;
+}
+
+.welcome-card::before,
+.welcome-card::after {
+  position: absolute;
+  width: 34px;
+  height: 5px;
+  background: #080a05;
+  content: '';
+}
+
+.welcome-card::before {
+  top: -3px;
+  left: 24px;
+}
+
+.welcome-card::after {
+  right: 24px;
+  bottom: -3px;
+}
+
+.welcome-eyebrow,
+.welcome-index,
+.welcome-footer,
+.welcome-coordinate {
+  font-family: var(--mono, 'SFMono-Regular', Consolas, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.welcome-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 40px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #080a05;
+}
+
+.welcome-status {
+  width: 9px;
+  height: 9px;
+  background: #080a05;
+}
+
+.welcome-divider {
+  color: #445a00;
+}
+
+.welcome-index {
+  display: table;
+  margin: 0 0 18px;
+  padding: 7px 10px;
+  background: #080a05;
+  color: #c4ff00;
+  font-size: 10px;
+}
+
+.welcome-card h1 {
+  margin: 0;
+  color: #080a05;
+  font-family: var(--mono, 'SFMono-Regular', Consolas, monospace);
+  font-size: clamp(40px, 8vw, 80px);
+  font-weight: 900;
+  letter-spacing: -0.1em;
+  line-height: 0.88;
+  text-transform: uppercase;
+}
+
+.welcome-card h1 span {
+  display: table;
+  margin-top: 0.12em;
+  padding: 0.1em 0.14em 0.12em;
+  background: #080a05;
+  color: #c4ff00;
+}
+
+.welcome-description {
+  max-width: 430px;
+  margin: 26px 0 30px;
+  color: #1d2609;
+  font-size: 15px;
+  font-weight: 550;
+  line-height: 1.65;
+}
+
+.launch-button {
+  display: flex;
+  width: 100%;
+  min-height: 62px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  border: 2px solid #080a05;
+  background: #080a05;
+  color: #c4ff00;
+  cursor: pointer;
+  font: 700 13px/1 var(--mono, 'SFMono-Regular', Consolas, monospace);
+  text-transform: uppercase;
+  transition:
+    background 150ms ease,
+    color 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.launch-button:hover {
+  transform: translate(-3px, -3px);
+  background: #f4f4ec;
+  color: #080a05;
+  box-shadow: 5px 5px 0 #080a05;
+}
+
+.launch-button:focus-visible {
+  outline: 3px solid #080a05;
+  outline-offset: 4px;
+}
+
+.launch-arrow {
+  font-size: 23px;
+  font-weight: 400;
+}
+
+.welcome-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 2px solid #080a05;
+  color: #273309;
+  font-size: 9px;
+}
+
+.welcome-coordinate {
+  position: absolute;
+  right: 28px;
+  bottom: 24px;
+  padding: 9px 11px;
+  border: 1px solid #c4ff00;
+  background: #080a05;
+  color: #c4ff00;
+  font-size: 9px;
+}
+
+.welcome-coordinate span {
+  padding: 0 5px;
+  color: #f4f4ec;
+}
+
+.welcome-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(88vw, 1120px);
+  height: min(86vh, 880px);
+  border: 1px solid rgba(196, 255, 0, 0.35);
+  animation: frame-spin 36s linear infinite;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.welcome-orbit--two {
+  width: min(81vw, 1020px);
+  height: min(74vh, 760px);
+  border-style: dashed;
+  border-color: rgba(196, 255, 0, 0.2);
+  animation: frame-spin 52s linear infinite reverse;
+}
+
+.welcome-orbit::after {
+  position: absolute;
+  top: -4px;
+  left: 18%;
+  width: 8px;
+  height: 8px;
+  background: #c4ff00;
+  content: '';
+}
+
+@keyframes frame-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 .scene-hint {
@@ -21,7 +256,48 @@
   right: 24px;
   bottom: 20px;
   margin: 0;
-  color: #a4a9b5;
-  font-size: 14px;
+  padding: 9px 12px;
+  border: 1px solid #c4ff00;
+  background: #080a05;
+  color: #c4ff00;
+  font-family: var(--mono, 'SFMono-Regular', Consolas, monospace);
+  font-size: 11px;
   pointer-events: none;
+  text-transform: uppercase;
+}
+
+@media (max-width: 520px) {
+  .welcome {
+    padding: 18px;
+  }
+
+  .welcome-card {
+    padding: 26px 20px;
+    box-shadow: 7px 7px 0 #f4f4ec;
+  }
+
+  .welcome-eyebrow {
+    margin-bottom: 34px;
+    font-size: 9px;
+  }
+
+  .welcome-footer {
+    flex-wrap: wrap;
+    font-size: 8px;
+    letter-spacing: 0.08em;
+  }
+
+  .welcome-coordinate {
+    right: 18px;
+    bottom: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
