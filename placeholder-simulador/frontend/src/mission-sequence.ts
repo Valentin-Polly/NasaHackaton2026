@@ -26,8 +26,8 @@ export type MissionDefinition = {
 }
 
 const lunarMarkerCoordinates = {
-  selenographicLatitude: -15 + Math.random() * 30,
-  selenographicLongitude: -120 + Math.random() * 60,
+  selenographicLatitude: 0.67416,
+  selenographicLongitude: 23.47314,
 }
 
 export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
@@ -65,19 +65,26 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
               poleLongitude: -86.4745,
               angularRadius: 89.6776,
             },
+            {
+              type: 'surface-circle',
+              body: 'moon',
+              poleLatitude: -81.33,
+              poleLongitude: 10.27,
+              angularRadius: 86.333,
+            },
           ],
         },
       },
       {
         id: 'lunar-exploration',
         title: 'Exploración lunar',
-        description: 'Continúa hacia un punto placeholder elegido al azar sobre la superficie lunar.',
+        description: 'Explora Tranquility Base, el lugar exacto donde alunizó Apollo 11.',
         marker: {
           location: {
             body: 'moon',
             coordinates: lunarMarkerCoordinates,
           },
-          label: 'Abrir galería placeholder de la Luna',
+          label: 'Abrir galería de Tranquility Base, sitio de alunizaje de Apollo 11',
           gallery: apollo11MoonGallery,
         },
       },

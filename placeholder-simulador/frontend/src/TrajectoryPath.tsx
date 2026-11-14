@@ -47,7 +47,7 @@ function getSegmentPoints(
     const point = pole.clone().multiplyScalar(radialComponent)
       .addScaledVector(tangent, circleRadius * Math.cos(angle))
       .addScaledVector(bitangent, circleRadius * Math.sin(angle))
-      .multiplyScalar(radius + 0.012)
+      .multiplyScalar(radius * 1.008)
       .add(new Vector3(...center))
     points.push(point)
   }
