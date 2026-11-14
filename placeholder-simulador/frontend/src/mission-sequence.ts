@@ -1,12 +1,14 @@
 import type { CelestialMarkerLocation } from './celestial-marker-types'
 import type { PhotoGalleryData } from './gallery-data'
+import type { Trajectory } from './trajectory-types'
 import { apollo11FloridaGallery, apollo11MoonGallery } from './gallery-data'
 
 export type MissionStep = {
   id: string
   title: string
   description: string
-  marker: {
+  trajectory?: Trajectory
+  marker?: {
     location: CelestialMarkerLocation
     label: string
     gallery: PhotoGalleryData
@@ -48,6 +50,22 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
           },
           label: 'Abrir galería placeholder de Apollo 11 en Florida',
           gallery: apollo11FloridaGallery,
+        },
+      },
+      {
+        id: 'parking-orbit',
+        title: 'Órbita de estacionamiento',
+        description: 'Recorre la órbita de estacionamiento de Apollo 11 alrededor de la Tierra.',
+        trajectory: {
+          segments: [
+            {
+              type: 'surface-circle',
+              body: 'earth',
+              poleLatitude: 56.6293,
+              poleLongitude: -86.4745,
+              angularRadius: 89.6776,
+            },
+          ],
         },
       },
       {

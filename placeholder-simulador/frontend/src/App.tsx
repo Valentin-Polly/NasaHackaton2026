@@ -6,6 +6,7 @@ import { SRGBColorSpace, Vector3 } from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import CelestialMarker from './CelestialMarker'
 import type { CelestialMarkerLocation } from './celestial-marker-types'
+import TrajectoryPath from './TrajectoryPath'
 import MissionPanel from './MissionPanel'
 import PhotoGallery from './PhotoGallery'
 import type { PhotoGalleryData } from './gallery-data'
@@ -173,8 +174,11 @@ function App() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [activeGallery, setActiveGallery] = useState<PhotoGalleryData | null>(null)
   const mission = missionSequence[0]
-  const activeMarker = mission.steps[currentStepIndex].marker
-  const markerSurface = CELESTIAL_BODY_SURFACES[activeMarker.location.body]
+  const activeStep = mission.steps[currentStepIndex]
+  const activeMarker = activeStep.marker
+  const markerSurface = activeMarker
+    ? CELESTIAL_BODY_SURFACES[activeMarker.location.body]
+    : null
 
   const handleStepChange = (index: number) => {
     setCurrentStepIndex(index)
@@ -208,7 +212,10 @@ function App() {
             onSelect={() => setCameraFocus({ position: EARTH_POSITION, distance: 5.6, minDistance: 2 })}
             onHoverChange={setHoveringBody}
           />
-          {started && (
+          {started && activeStep.trajectory && (
+            <TrajectoryPath trajectory={activeStep.trajectory} surfaces={CELESTIAL_BODY_SURFACES} />
+          )}
+          {started && activeMarker && markerSurface && (
             <CelestialMarker
               {...activeMarker.location}
               center={markerSurface.center}
