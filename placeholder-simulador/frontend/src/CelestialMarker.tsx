@@ -1,6 +1,4 @@
-import { useRef } from 'react'
 import { Html } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
 import { MathUtils, Vector3 } from 'three'
 import type { CelestialMarkerLocation } from './celestial-marker-types'
 import { CelestialMarkerIcon, EarthMarkerIcon } from './mission-marker-icons'
@@ -15,8 +13,6 @@ type CelestialMarkerProps = {
 } & CelestialMarkerLocation
 
 function CelestialMarker(props: CelestialMarkerProps) {
-  const markerElement = useRef<HTMLButtonElement>(null)
-  const cameraPosition = useRef(new Vector3())
   const latitude =
     props.body === 'earth'
       ? props.coordinates.latitude
@@ -40,19 +36,9 @@ function CelestialMarker(props: CelestialMarkerProps) {
   const position = new Vector3(...props.center).addScaledVector(normal, props.radius + 0.035)
   const Icon = props.body === 'earth' ? EarthMarkerIcon : CelestialMarkerIcon
 
-  useFrame(({ camera }) => {
-    if (!markerElement.current) return
-
-    camera.getWorldPosition(cameraPosition.current)
-    cameraPosition.current.sub(position)
-    markerElement.current.style.visibility =
-      normal.dot(cameraPosition.current) > 0 ? 'visible' : 'hidden'
-  })
-
   return (
     <Html center position={position} zIndexRange={[2, 0]}>
       <button
-        ref={markerElement}
         className="celestial-marker"
         type="button"
         aria-label={props.label}
