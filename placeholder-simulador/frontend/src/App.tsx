@@ -1,41 +1,155 @@
-import { useState } from 'react'
-import { Canvas } from '@react-three/fiber'
+import { useEffect, useRef, useState } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, useGLTF, useTexture } from '@react-three/drei'
 import { DepthOfField, EffectComposer } from '@react-three/postprocessing'
-import { SRGBColorSpace } from 'three'
+import { SRGBColorSpace, Vector3 } from 'three'
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import './App.css'
+
+type CameraFocusTarget = {
+  position: [number, number, number]
+  distance: number
+  minDistance: number
+}
 
 function Skybox() {
   const { scene } = useGLTF('/billions_stars_skybox_hdri_panorama.glb')
   return <primitive object={scene} scale={100} />
 }
 
-function Earth() {
+type BodyInteractionProps = {
+  onSelect: () => void
+  onHoverChange: (hovering: boolean) => void
+}
+
+function Earth({ onSelect, onHoverChange }: BodyInteractionProps) {
   const texture = useTexture('/earth-blue-marble.png')
   texture.colorSpace = SRGBColorSpace
 
   return (
-    <mesh>
+    <mesh
+      onClick={(event) => {
+        event.stopPropagation()
+        onSelect()
+      }}
+      onPointerOver={(event) => {
+        event.stopPropagation()
+        onHoverChange(true)
+      }}
+      onPointerOut={() => onHoverChange(false)}
+    >
       <sphereGeometry args={[1.5, 64, 64]} />
       <meshStandardMaterial map={texture} />
     </mesh>
   )
 }
 
+function Moon({ onSelect, onHoverChange }: BodyInteractionProps) {
+  return (
+    <mesh
+      position={[7.5, 0, 0]}
+      onClick={(event) => {
+        event.stopPropagation()
+        onSelect()
+      }}
+      onPointerOver={(event) => {
+        event.stopPropagation()
+        onHoverChange(true)
+      }}
+      onPointerOut={() => onHoverChange(false)}
+    >
+      <sphereGeometry args={[0.375, 48, 48]} />
+      <meshStandardMaterial color="#c6c6c2" roughness={1} />
+    </mesh>
+  )
+}
+
+function Sun({ onSelect, onHoverChange }: BodyInteractionProps) {
+  return (
+    <mesh
+      position={[-12, 5, -14]}
+      onClick={(event) => {
+        event.stopPropagation()
+        onSelect()
+      }}
+      onPointerOver={(event) => {
+        event.stopPropagation()
+        onHoverChange(true)
+      }}
+      onPointerOut={() => onHoverChange(false)}
+    >
+      <sphereGeometry args={[7.5, 64, 64]} />
+      <meshBasicMaterial color="#ffb52e" />
+    </mesh>
+  )
+}
+
+function SceneControls({ focus }: { focus: CameraFocusTarget | null }) {
+  const controls = useRef<OrbitControlsImpl | null>(null)
+  const { camera } = useThree()
+  const destinationPosition = useRef(new Vector3())
+  const transitioning = useRef(false)
+
+  useEffect(() => {
+    const currentControls = controls.current
+    if (!focus || !currentControls) return
+
+    const target = new Vector3(...focus.position)
+    const direction = camera.position.clone().sub(currentControls.target).normalize()
+
+    destinationPosition.current.copy(target).addScaledVector(direction, focus.distance)
+    currentControls.target.copy(target)
+    currentControls.update()
+    transitioning.current = true
+  }, [camera, focus])
+
+  useFrame((_, delta) => {
+    const currentControls = controls.current
+    if (!currentControls || !transitioning.current) return
+
+    const progress = 1 - Math.exp(-4 * delta)
+    camera.position.lerp(destinationPosition.current, progress)
+    currentControls.update()
+
+    if (camera.position.distanceToSquared(destinationPosition.current) < 0.001) {
+      camera.position.copy(destinationPosition.current)
+      currentControls.update()
+      transitioning.current = false
+    }
+  })
+
+  return (
+    <OrbitControls
+      ref={controls}
+      enablePan={false}
+      enableZoom
+      minDistance={focus?.minDistance ?? 2}
+      maxDistance={40}
+      onStart={() => {
+        transitioning.current = false
+      }}
+    />
+  )
+}
+
 function App() {
   const [started, setStarted] = useState(false)
+  const [selectingMission, setSelectingMission] = useState(false)
+  const [selectedMission, setSelectedMission] = useState<number | null>(null)
+  const [cameraFocus, setCameraFocus] = useState<CameraFocusTarget | null>(null)
+  const [hoveringBody, setHoveringBody] = useState(false)
 
   return (
     <main className="scene">
       <div
-        className={`simulator ${started ? 'simulator--ready' : 'simulator--preview'}`}
+        className={`simulator ${started ? 'simulator--ready' : 'simulator--preview'}${hoveringBody ? ' simulator--body-hover' : ''}`}
         aria-hidden={!started}
       >
         <Canvas camera={{ position: [3, 2.5, 4], fov: 45 }}>
           <EffectComposer>
             {/* Cambia acá el enfoque, rango y fuerza del bokeh. */}
             <DepthOfField
-              target={[0, 0, 0]}
+              target={cameraFocus?.position ?? [0, 0, 0]}
               focusRange={20}
               bokehScale={2}
             />
@@ -44,8 +158,19 @@ function App() {
           <Skybox />
           <ambientLight intensity={1.5} />
           <directionalLight position={[4, 5, 3]} intensity={3} />
-          <Earth />
-          <OrbitControls enablePan={false} enableZoom={false} />
+          <Earth
+            onSelect={() => setCameraFocus({ position: [0, 0, 0], distance: 5.6, minDistance: 2 })}
+            onHoverChange={setHoveringBody}
+          />
+          <Moon
+            onSelect={() => setCameraFocus({ position: [7.5, 0, 0], distance: 3, minDistance: 2 })}
+            onHoverChange={setHoveringBody}
+          />
+          <Sun
+            onSelect={() => setCameraFocus({ position: [-12, 5, -14], distance: 22.5, minDistance: 8 })}
+            onHoverChange={setHoveringBody}
+          />
+          <SceneControls focus={cameraFocus} />
         </Canvas>
       </div>
 
@@ -54,32 +179,73 @@ function App() {
           <div className="welcome-orbit welcome-orbit--one" aria-hidden="true" />
           <div className="welcome-orbit welcome-orbit--two" aria-hidden="true" />
 
-          <div className="welcome-card">
-            <p className="welcome-eyebrow">
-              <span className="welcome-status" />
-              SISTEMA SOLAR <span className="welcome-divider">/</span> SIMULADOR 3D
-            </p>
-            <p className="welcome-index">EXPLORACIÓN INTERACTIVA</p>
-            <h1 id="welcome-title">
-              PLACEHOLDER
-              <span>SIMULADOR :)</span>
-            </h1>
-            <p className="welcome-description">
-              Una experiencia interactiva para explorar nuestro sistema solar.
-            </p>
-            <button
-              className="launch-button"
-              type="button"
-              onClick={() => setStarted(true)}
-            >
-              <span>Comenzar exploración</span>
-              <span className="launch-arrow" aria-hidden="true">→</span>
-            </button>
-            <div className="welcome-footer">
-              <span>3D</span>
-              <span>ARRASTRA PARA EXPLORAR</span>
+          {!selectingMission ? (
+            <div className="welcome-card">
+              <p className="welcome-eyebrow">
+                <span className="welcome-status" />
+                SISTEMA SOLAR <span className="welcome-divider">/</span> SIMULADOR 3D
+              </p>
+              <p className="welcome-index">EXPLORACIÓN INTERACTIVA</p>
+              <h1 id="welcome-title">
+                PLACEHOLDER
+                <span>SIMULADOR :)</span>
+              </h1>
+              <p className="welcome-description">
+                Una experiencia interactiva para explorar nuestro sistema solar.
+              </p>
+              <button
+                className="launch-button"
+                type="button"
+                onClick={() => setSelectingMission(true)}
+              >
+                <span>Seleccionar misión</span>
+                <span className="launch-arrow" aria-hidden="true">→</span>
+              </button>
+              <div className="welcome-footer">
+                <span>3D</span>
+                <span>ARRASTRA PARA EXPLORAR</span>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="welcome-card mission-card">
+              <p className="welcome-eyebrow">
+                <span className="welcome-status" />
+                SISTEMA SOLAR <span className="welcome-divider">/</span> SELECCIÓN
+              </p>
+              <p className="welcome-index">ELIGE TU DESTINO</p>
+              <h1 id="welcome-title" className="mission-title">
+                SELECCIONAR
+                <span>MISIÓN</span>
+              </h1>
+              <div className="mission-grid" aria-label="Misiones disponibles">
+                {Array.from({ length: 6 }, (_, index) => (
+                  <button
+                    className={`mission-option${selectedMission === index ? ' mission-option--selected' : ''}`}
+                    key={index}
+                    type="button"
+                    aria-pressed={selectedMission === index}
+                    onClick={() => setSelectedMission(index)}
+                  >
+                    <span className="mission-number">MISIÓN 0{index + 1}</span>
+                    <span className="mission-placeholder">PLACEHOLDER</span>
+                  </button>
+                ))}
+              </div>
+              <button
+                className="launch-button mission-launch"
+                type="button"
+                disabled={selectedMission === null}
+                onClick={() => setStarted(true)}
+              >
+                <span>{selectedMission === null ? 'Selecciona una misión' : 'Iniciar misión'}</span>
+                <span className="launch-arrow" aria-hidden="true">→</span>
+              </button>
+              <div className="welcome-footer">
+                <span>06 MISIONES</span>
+                <span>SELECCIONA UN DESTINO</span>
+              </div>
+            </div>
+          )}
           <span className="welcome-coordinate" aria-hidden="true">
             31.438° S <span>·</span> 64.193° O
           </span>
