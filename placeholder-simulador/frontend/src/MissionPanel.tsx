@@ -26,20 +26,20 @@ function MissionPanel({ mission, currentStepIndex, onStepChange }: MissionPanelP
       >
         <p className="mission-sidebar-eyebrow">
           <span className="mission-sidebar-status" />
-          SISTEMA SOLAR <span>/</span> TRANSMISIÓN ACTIVA
+          SISTEMA SOLAR
         </p>
 
         <div className="mission-sidebar-content">
           <p className="mission-sidebar-index">{mission.protocol}</p>
           <h2 id="mission-sidebar-title" className="mission-sidebar-title">
-            OBJETIVO
-            <span>PRINCIPAL</span>
+            EL PRIMER
+            <span>ALUNIZAJE</span>
           </h2>
           <p className="mission-sidebar-description">{mission.summary}</p>
 
           <section className="mission-objective" aria-label="Objetivo de misión">
             <p className="mission-objective-label">
-              PASO {String(currentStepIndex + 1).padStart(2, '0')} / {String(mission.steps.length).padStart(2, '0')}
+              ETAPA {String(currentStepIndex + 1).padStart(2, '0')} / {String(mission.steps.length).padStart(2, '0')}
             </p>
             <div className="mission-objective-content">
               <span className="mission-objective-number">
@@ -77,10 +77,19 @@ function MissionPanel({ mission, currentStepIndex, onStepChange }: MissionPanelP
             </div>
           </section>
 
-          <div className="mission-readout">
-            <p><span>ESTADO</span><strong>{mission.status}</strong></p>
-            <p><span>SECTOR</span><strong>{mission.sector}</strong></p>
-          </div>
+          {currentStep.narrative && (
+            <div className="mission-narrative">
+              {currentStep.narrative.map((paragraph, paragraphIndex) => (
+                <p key={`${currentStep.id}-narrative-${paragraphIndex}`}>
+                  {paragraph.map((segment, segmentIndex) => (
+                    segment.emphasis
+                      ? <strong key={`${currentStep.id}-emphasis-${segmentIndex}`}>{segment.text}</strong>
+                      : <span key={`${currentStep.id}-text-${segmentIndex}`}>{segment.text}</span>
+                  ))}
+                </p>
+              ))}
+            </div>
+          )}
         </div>
 
         <footer className="mission-sidebar-footer">

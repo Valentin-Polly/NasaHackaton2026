@@ -11,10 +11,20 @@ export type TrajectorySegment =
     }
   | {
       type: 'surface-circle'
+      id: string
       body: CelestialMarkerLocation['body']
       poleLatitude: number
       poleLongitude: number
       angularRadius: number
+      color?: string
+    }
+  | {
+      type: 'parabola'
+      fromCircle: string
+      toCircle: string
+      fromAngle: number
+      toAngle: number
+      controlPoint: TrajectoryPoint
       color?: string
     }
 

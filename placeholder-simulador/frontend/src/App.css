@@ -270,7 +270,6 @@
 .mission-sidebar-eyebrow,
 .mission-sidebar-index,
 .mission-objective-label,
-.mission-readout,
 .mission-sidebar-footer {
   font-family: var(--mono, 'SFMono-Regular', Consolas, monospace);
   font-size: 10px;
@@ -437,25 +436,24 @@
   outline-offset: 3px;
 }
 
-.mission-readout {
-  display: grid;
-  gap: 0;
-  margin-top: 30px;
-  color: #aeb19f;
+.mission-narrative {
+  margin-top: 28px;
+  color: #c7c9bd;
+  font-size: 12px;
+  line-height: 1.65;
+  text-align: justify;
 }
 
-.mission-readout p {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 0;
-  padding: 13px 0;
-  border-bottom: 1px solid rgba(244, 244, 236, 0.18);
+.mission-narrative p {
+  margin: 0 0 14px;
 }
 
-.mission-readout strong {
-  color: #f4f4ec;
-  text-align: right;
+.mission-narrative p:last-child {
+  margin-bottom: 0;
+}
+
+.mission-narrative strong {
+  color: #c4ff00;
 }
 
 .mission-sidebar-footer {
@@ -747,9 +745,12 @@
   .mission-sidebar-eyebrow,
   .mission-sidebar-index,
   .mission-objective-label,
-  .mission-readout,
   .mission-sidebar-footer {
     font-size: 9px;
+  }
+
+  .mission-narrative {
+    font-size: 11px;
   }
 
   .mission-sidebar-title {

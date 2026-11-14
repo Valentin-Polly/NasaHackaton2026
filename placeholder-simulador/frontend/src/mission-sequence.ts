@@ -3,10 +3,16 @@ import type { PhotoGalleryData } from './gallery-data'
 import type { Trajectory } from './trajectory-types'
 import { apollo11FloridaGallery, apollo11MoonGallery } from './gallery-data'
 
+export type MissionTextSegment = {
+  text: string
+  emphasis?: boolean
+}
+
 export type MissionStep = {
   id: string
   title: string
   description: string
+  narrative?: MissionTextSegment[][]
   trajectory?: Trajectory
   marker?: {
     location: CelestialMarkerLocation
@@ -20,8 +26,6 @@ export type MissionDefinition = {
   sequence: string
   protocol: string
   summary: string
-  status: string
-  sector: string
   steps: [MissionStep, ...MissionStep[]]
 }
 
@@ -35,14 +39,31 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
     id: 'apollo-11',
     sequence: '01',
     protocol: 'MISIÓN / APOLLO 11',
-    summary: 'Sigue la misión desde su punto de lanzamiento en Florida hasta una zona de exploración lunar.',
-    status: 'EN ESPERA',
-    sector: 'TIERRA → LUNA',
+    summary: 'Sigue la misión desde su punto de lanzamiento el Mar de la Tranquilidad.',
     steps: [
       {
         id: 'florida-launch',
         title: 'Punto de lanzamiento',
         description: 'Explora el sitio de lanzamiento de Apollo 11 en Florida.',
+        narrative: [
+          [
+            {
+              text: 'A las 9:32 de la mañana, hora de Florida, el Apolo 11 despegó desde el Centro Espacial Kennedy. Pero ¿por qué exactamente a esa hora?',
+            },
+          ],
+          [
+            { text: 'La NASA debía aprovechar una ' },
+            { text: 'ventana de lanzamiento', emphasis: true },
+            {
+              text: ' para que la nave Saturn V pudiera interceptar la posición futura de la Luna (diferente de la del lanzamiento, porque está en movimiento).',
+            },
+          ],
+          [
+            {
+              text: 'Particularmente, la NASA quería una iluminación poco vertical para que los astronautas pudieran observar bien los cráteres en el Mar de la Tranquilidad.',
+            },
+          ],
+        ],
         marker: {
           location: {
             body: 'earth',
@@ -60,6 +81,7 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
           segments: [
             {
               type: 'surface-circle',
+              id: 'earth-parking-orbit',
               body: 'earth',
               poleLatitude: 56.6293,
               poleLongitude: -86.4745,
@@ -67,10 +89,19 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
             },
             {
               type: 'surface-circle',
+              id: 'moon-approach-orbit',
               body: 'moon',
               poleLatitude: -81.33,
               poleLongitude: 10.27,
               angularRadius: 86.333,
+            },
+            {
+              type: 'parabola',
+              fromCircle: 'earth-parking-orbit',
+              toCircle: 'moon-approach-orbit',
+              fromAngle: 0,
+              toAngle: 0,
+              controlPoint: [4.5, 0.3, 0],
             },
           ],
         },
