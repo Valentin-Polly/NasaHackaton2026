@@ -474,6 +474,22 @@
   font-style: normal;
 }
 
+.earth-marker {
+  display: flex;
+  align-items: center;
+  padding: 1px;
+  border: 1px solid #c4ff00;
+  background: #080a05;
+  box-shadow: 1px 1px 0 #f4f4ec;
+  color: #c4ff00;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.earth-marker svg {
+  flex: 0 0 auto;
+}
+
 .welcome-footer {
   display: flex;
   justify-content: space-between;
