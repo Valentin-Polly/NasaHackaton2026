@@ -4,7 +4,10 @@ import { OrbitControls, useGLTF, useTexture } from '@react-three/drei'
 import { DepthOfField, EffectComposer } from '@react-three/postprocessing'
 import { SRGBColorSpace, Vector3 } from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
+import CelestialMarker from './CelestialMarker'
 import MissionPanel from './MissionPanel'
+import PhotoGallery from './PhotoGallery'
+import { washingtonGallery } from './gallery-data'
 import { missionSequence } from './mission-sequence'
 import './App.css'
 
@@ -150,6 +153,7 @@ function App() {
   const [started, setStarted] = useState(false)
   const [cameraFocus, setCameraFocus] = useState<CameraFocusTarget | null>(null)
   const [hoveringBody, setHoveringBody] = useState(false)
+  const [galleryOpen, setGalleryOpen] = useState(false)
   const mission = missionSequence[0]
 
   return (
@@ -178,6 +182,14 @@ function App() {
           <Earth
             onSelect={() => setCameraFocus({ position: [0, 0, 0], distance: 5.6, minDistance: 2 })}
             onHoverChange={setHoveringBody}
+          />
+          <CelestialMarker
+            body="earth"
+            center={[0, 0, 0]}
+            radius={1.5}
+            coordinates={{ latitude: 38.9072, longitude: -77.0369 }}
+            label="Abrir galería de Washington, D. C."
+            onActivate={() => setGalleryOpen(true)}
           />
           <Moon
             onSelect={() => setCameraFocus({ position: [7.5, 0, 0], distance: 3, minDistance: 2 })}
@@ -229,6 +241,13 @@ function App() {
       )}
 
       {started && <MissionPanel mission={mission} />}
+
+      {galleryOpen && (
+        <PhotoGallery
+          gallery={washingtonGallery}
+          onClose={() => setGalleryOpen(false)}
+        />
+      )}
 
       {started && <p className="scene-hint">Arrastra para girar</p>}
     </main>

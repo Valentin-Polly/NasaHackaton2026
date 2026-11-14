@@ -34,10 +34,11 @@ type CelestialMarkerProps = {
   center: Position
   radius: number
   label: string
+  onActivate: () => void
 } & (EarthMarkerLocation | MoonMarkerLocation | SunMarkerLocation)
 
 function CelestialMarker(props: CelestialMarkerProps) {
-  const markerElement = useRef<HTMLDivElement>(null)
+  const markerElement = useRef<HTMLButtonElement>(null)
   const cameraPosition = useRef(new Vector3())
   const latitude =
     props.body === 'earth'
@@ -72,15 +73,22 @@ function CelestialMarker(props: CelestialMarkerProps) {
   })
 
   return (
-    <Html center distanceFactor={10} position={position} zIndexRange={[2, 0]}>
-      <div
+    <Html center position={position} zIndexRange={[2, 0]}>
+      <button
         ref={markerElement}
         className="celestial-marker"
-        role="img"
+        type="button"
         aria-label={props.label}
+        onPointerDown={(event) => event.stopPropagation()}
+        onClick={(event) => {
+          event.stopPropagation()
+          props.onActivate()
+        }}
       >
-        <Icon aria-hidden="true" size={5} strokeWidth={1.5} />
-      </div>
+        <span className="celestial-marker-face">
+          <Icon aria-hidden="true" size={5} strokeWidth={1.5} />
+        </span>
+      </button>
     </Html>
   )
 }
