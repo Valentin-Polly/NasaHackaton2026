@@ -1,10 +1,10 @@
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, useGLTF } from '@react-three/drei'
+import { DepthOfField, EffectComposer } from '@react-three/postprocessing'
 import './App.css'
 
 function Skybox() {
   const { scene } = useGLTF('/billions_stars_skybox_hdri_panorama.glb')
-
   return <primitive object={scene} scale={100} />
 }
 
@@ -12,6 +12,14 @@ function App() {
   return (
     <main className="scene">
       <Canvas camera={{ position: [3, 2.5, 4], fov: 45 }}>
+        <EffectComposer>
+          {/* Cambia acá el enfoque, rango y fuerza del bokeh. */}
+          <DepthOfField
+            target={[0, 0, 0]}
+            focusRange={20}
+            bokehScale={2}
+          />
+        </EffectComposer>
         <color attach="background" args={['#10131a']} />
         <Skybox />
         <ambientLight intensity={1.5} />
