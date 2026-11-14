@@ -4,6 +4,8 @@ import { OrbitControls, useGLTF, useTexture } from '@react-three/drei'
 import { DepthOfField, EffectComposer } from '@react-three/postprocessing'
 import { SRGBColorSpace, Vector3 } from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
+import MissionPanel from './MissionPanel'
+import { missionSequence } from './mission-sequence'
 import './App.css'
 
 type CameraFocusTarget = {
@@ -45,7 +47,7 @@ function Earth({ onSelect, onHoverChange }: BodyInteractionProps) {
         map={texture}
         emissive="#ffffff"
         emissiveMap={texture}
-        emissiveIntensity={0.004}
+        emissiveIntensity={0.01}
       />
     </mesh>
   )
@@ -147,10 +149,9 @@ function SceneControls({ focus }: { focus: CameraFocusTarget | null }) {
 
 function App() {
   const [started, setStarted] = useState(false)
-  const [selectingMission, setSelectingMission] = useState(false)
-  const [selectedMission, setSelectedMission] = useState<number | null>(null)
   const [cameraFocus, setCameraFocus] = useState<CameraFocusTarget | null>(null)
   const [hoveringBody, setHoveringBody] = useState(false)
+  const mission = missionSequence[0]
 
   return (
     <main className="scene">
@@ -196,78 +197,39 @@ function App() {
           <div className="welcome-orbit welcome-orbit--one" aria-hidden="true" />
           <div className="welcome-orbit welcome-orbit--two" aria-hidden="true" />
 
-          {!selectingMission ? (
-            <div className="welcome-card">
-              <p className="welcome-eyebrow">
-                <span className="welcome-status" />
-                SISTEMA SOLAR <span className="welcome-divider">/</span> SIMULADOR 3D
-              </p>
-              <p className="welcome-index">EXPLORACIÓN INTERACTIVA</p>
-              <h1 id="welcome-title">
-                PLACEHOLDER
-                <span>SIMULADOR :)</span>
-              </h1>
-              <p className="welcome-description">
-                Una experiencia interactiva para explorar nuestro sistema solar.
-              </p>
-              <button
-                className="launch-button"
-                type="button"
-                onClick={() => setSelectingMission(true)}
-              >
-                <span>Seleccionar misión</span>
-                <span className="launch-arrow" aria-hidden="true">→</span>
-              </button>
-              <div className="welcome-footer">
-                <span>3D</span>
-                <span>ARRASTRA PARA EXPLORAR</span>
-              </div>
+          <div className="welcome-card">
+            <p className="welcome-eyebrow">
+              <span className="welcome-status" />
+              SISTEMA SOLAR <span className="welcome-divider">/</span> SIMULADOR 3D
+            </p>
+            <p className="welcome-index">EXPLORACIÓN INTERACTIVA</p>
+            <h1 id="welcome-title">
+              PLACEHOLDER
+              <span>SIMULADOR :)</span>
+            </h1>
+            <p className="welcome-description">
+              Una experiencia interactiva para explorar nuestro sistema solar.
+            </p>
+            <button
+              className="launch-button"
+              type="button"
+              onClick={() => setStarted(true)}
+            >
+              <span>Comenzar exploración</span>
+              <span className="launch-arrow" aria-hidden="true">→</span>
+            </button>
+            <div className="welcome-footer">
+              <span>3D</span>
+              <span>ARRASTRA PARA EXPLORAR</span>
             </div>
-          ) : (
-            <div className="welcome-card mission-card">
-              <p className="welcome-eyebrow">
-                <span className="welcome-status" />
-                SISTEMA SOLAR <span className="welcome-divider">/</span> SELECCIÓN
-              </p>
-              <p className="welcome-index">ELIGE TU DESTINO</p>
-              <h1 id="welcome-title" className="mission-title">
-                SELECCIONAR
-                <span>MISIÓN</span>
-              </h1>
-              <div className="mission-grid" aria-label="Misiones disponibles">
-                {Array.from({ length: 6 }, (_, index) => (
-                  <button
-                    className={`mission-option${selectedMission === index ? ' mission-option--selected' : ''}`}
-                    key={index}
-                    type="button"
-                    aria-pressed={selectedMission === index}
-                    onClick={() => setSelectedMission(index)}
-                  >
-                    <span className="mission-number">MISIÓN 0{index + 1}</span>
-                    <span className="mission-placeholder">PLACEHOLDER</span>
-                  </button>
-                ))}
-              </div>
-              <button
-                className="launch-button mission-launch"
-                type="button"
-                disabled={selectedMission === null}
-                onClick={() => setStarted(true)}
-              >
-                <span>{selectedMission === null ? 'Selecciona una misión' : 'Iniciar misión'}</span>
-                <span className="launch-arrow" aria-hidden="true">→</span>
-              </button>
-              <div className="welcome-footer">
-                <span>06 MISIONES</span>
-                <span>SELECCIONA UN DESTINO</span>
-              </div>
-            </div>
-          )}
+          </div>
           <span className="welcome-coordinate" aria-hidden="true">
             31.438° S <span>·</span> 64.193° O
           </span>
         </section>
       )}
+
+      {started && <MissionPanel mission={mission} />}
 
       {started && <p className="scene-hint">Arrastra para girar</p>}
     </main>
