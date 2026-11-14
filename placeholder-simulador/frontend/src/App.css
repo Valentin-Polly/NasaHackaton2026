@@ -474,7 +474,7 @@
   font-style: normal;
 }
 
-.earth-marker {
+.celestial-marker {
   display: flex;
   align-items: center;
   padding: 1px;
@@ -486,7 +486,7 @@
   transform: translateY(-50%);
 }
 
-.earth-marker svg {
+.celestial-marker svg {
   flex: 0 0 auto;
 }
 

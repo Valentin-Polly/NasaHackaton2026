@@ -1,0 +1,88 @@
+import { useRef } from 'react'
+import { Html } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
+import { MathUtils, Vector3 } from 'three'
+import { CelestialMarkerIcon, EarthMarkerIcon } from './mission-marker-icons'
+
+type Position = [number, number, number]
+
+type EarthMarkerLocation = {
+  body: 'earth'
+  coordinates: {
+    latitude: number
+    longitude: number
+  }
+}
+
+type MoonMarkerLocation = {
+  body: 'moon'
+  coordinates: {
+    selenographicLatitude: number
+    selenographicLongitude: number
+  }
+}
+
+type SunMarkerLocation = {
+  body: 'sun'
+  coordinates: {
+    heliographicLatitude: number
+    heliographicLongitude: number
+  }
+}
+
+type CelestialMarkerProps = {
+  center: Position
+  radius: number
+  label: string
+} & (EarthMarkerLocation | MoonMarkerLocation | SunMarkerLocation)
+
+function CelestialMarker(props: CelestialMarkerProps) {
+  const markerElement = useRef<HTMLDivElement>(null)
+  const cameraPosition = useRef(new Vector3())
+  const latitude =
+    props.body === 'earth'
+      ? props.coordinates.latitude
+      : props.body === 'moon'
+        ? props.coordinates.selenographicLatitude
+        : props.coordinates.heliographicLatitude
+  const longitude =
+    props.body === 'earth'
+      ? props.coordinates.longitude
+      : props.body === 'moon'
+        ? props.coordinates.selenographicLongitude
+        : props.coordinates.heliographicLongitude
+  const latitudeRadians = MathUtils.degToRad(latitude)
+  const longitudeRadians = MathUtils.degToRad(longitude)
+  // Longitudes increase eastward and follow SphereGeometry's equirectangular UV orientation.
+  const normal = new Vector3(
+    Math.cos(latitudeRadians) * Math.cos(longitudeRadians),
+    Math.sin(latitudeRadians),
+    -Math.cos(latitudeRadians) * Math.sin(longitudeRadians),
+  ).normalize()
+  const position = new Vector3(...props.center).addScaledVector(normal, props.radius + 0.035)
+  const Icon = props.body === 'earth' ? EarthMarkerIcon : CelestialMarkerIcon
+
+  useFrame(({ camera }) => {
+    if (!markerElement.current) return
+
+    camera.getWorldPosition(cameraPosition.current)
+    cameraPosition.current.sub(position)
+    markerElement.current.style.visibility =
+      normal.dot(cameraPosition.current) > 0 ? 'visible' : 'hidden'
+  })
+
+  return (
+    <Html center distanceFactor={10} position={position} zIndexRange={[2, 0]}>
+      <div
+        ref={markerElement}
+        className="celestial-marker"
+        role="img"
+        aria-label={props.label}
+      >
+        <Icon aria-hidden="true" size={5} strokeWidth={1.5} />
+      </div>
+    </Html>
+  )
+}
+
+export default CelestialMarker

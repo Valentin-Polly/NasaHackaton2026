@@ -4,7 +4,6 @@ import { OrbitControls, useGLTF, useTexture } from '@react-three/drei'
 import { DepthOfField, EffectComposer } from '@react-three/postprocessing'
 import { SRGBColorSpace, Vector3 } from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
-import EarthMarker from './EarthMarker.tsx'
 import MissionPanel from './MissionPanel'
 import { missionSequence } from './mission-sequence'
 import './App.css'
@@ -16,8 +15,6 @@ type CameraFocusTarget = {
 }
 
 const SUN_POSITION: [number, number, number] = [-12, 5, -14]
-const EARTH_RADIUS = 1.5
-
 function Skybox() {
   const { scene } = useGLTF('/billions_stars_skybox_hdri_panorama.glb')
   return <primitive object={scene} scale={100} />
@@ -44,7 +41,7 @@ function Earth({ onSelect, onHoverChange }: BodyInteractionProps) {
       }}
       onPointerOut={() => onHoverChange(false)}
     >
-      <sphereGeometry args={[EARTH_RADIUS, 64, 64]} />
+      <sphereGeometry args={[1.5, 64, 64]} />
       <meshStandardMaterial
         map={texture}
         emissive="#ffffff"
@@ -181,11 +178,6 @@ function App() {
           <Earth
             onSelect={() => setCameraFocus({ position: [0, 0, 0], distance: 5.6, minDistance: 2 })}
             onHoverChange={setHoveringBody}
-          />
-          <EarthMarker
-            latitude={38.9072}
-            longitude={-77.0369}
-            radius={EARTH_RADIUS}
           />
           <Moon
             onSelect={() => setCameraFocus({ position: [7.5, 0, 0], distance: 3, minDistance: 2 })}
