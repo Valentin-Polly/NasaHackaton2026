@@ -1,11 +1,24 @@
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, useGLTF } from '@react-three/drei'
+import { OrbitControls, useGLTF, useTexture } from '@react-three/drei'
 import { DepthOfField, EffectComposer } from '@react-three/postprocessing'
+import { SRGBColorSpace } from 'three'
 import './App.css'
 
 function Skybox() {
   const { scene } = useGLTF('/billions_stars_skybox_hdri_panorama.glb')
   return <primitive object={scene} scale={100} />
+}
+
+function Earth() {
+  const texture = useTexture('/earth-blue-marble.png')
+  texture.colorSpace = SRGBColorSpace
+
+  return (
+    <mesh>
+      <sphereGeometry args={[1.5, 64, 64]} />
+      <meshStandardMaterial map={texture} />
+    </mesh>
+  )
 }
 
 function App() {
@@ -24,10 +37,7 @@ function App() {
         <Skybox />
         <ambientLight intensity={1.5} />
         <directionalLight position={[4, 5, 3]} intensity={3} />
-        <mesh>
-          <boxGeometry args={[1.5, 1.5, 1.5]} />
-          <meshStandardMaterial color="#8b5cf6" roughness={0.35} />
-        </mesh>
+        <Earth />
         <OrbitControls enablePan={false} enableZoom={false} />
       </Canvas>
       <p className="scene-hint">Arrastra para girar</p>
