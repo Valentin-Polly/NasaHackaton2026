@@ -12,16 +12,16 @@ export const apollo11FloridaGallery: PhotoGalleryData = {
   title: 'APOLLO 11 / FLORIDA',
   photos: [
     {
-      src: '/earth-blue-marble.png',
-      alt: 'Imagen placeholder para el sitio de lanzamiento en Florida',
+      src: '/19a_am2019_bur6907_18_apolloximoonlaunch_0023029_live CREDITOS DAVID BURNETT.webp',
+      alt: 'Espectadores observan el lanzamiento del Apolo 11.',
     },
     {
-      src: '/lroc_color_2k.jpg',
-      alt: 'Imagen placeholder de la Luna',
+      src: '/despegue-del-saturn-v_00000000_394b51ce_230714123449_1280x1857.jpg',
+      alt: 'Despegue de un cohete Saturn V.',
     },
     {
-      src: '/euvi_aia304_2012_carrington_print.jpg',
-      alt: 'Imagen placeholder del Sol',
+      src: '/31419815333_7aaa95bef0_o.jpg',
+      alt: 'Tres astronautas del Apolo 11 posan frente a una maqueta del módulo lunar.',
     },
   ],
 }
@@ -30,8 +30,16 @@ export const apollo11MoonGallery: PhotoGalleryData = {
   title: 'APOLLO 11 / LUNA',
   photos: [
     {
-      src: '/lroc_color_2k.jpg',
-      alt: 'Imagen placeholder de la superficie lunar',
+      src: '/as11-40-5878~large.jpg',
+      alt: 'Huella de una bota sobre el regolito lunar durante Apollo 11.',
+    },
+    {
+      src: '/as11-44-6550~large.jpg',
+      alt: 'La Tierra sobre el horizonte lunar, vista desde Apollo 11.',
+    },
+    {
+      src: '/6900937~large.jpg',
+      alt: 'Buzz Aldrin desciende por la escalera del módulo lunar.',
     },
   ],
 }

@@ -13,6 +13,10 @@ export type MissionStep = {
   title: string
   description: string
   narrative?: MissionTextSegment[][]
+  image?: {
+    src: string
+    alt: string
+  }
   trajectory?: Trajectory
   marker?: {
     location: CelestialMarkerLocation
@@ -77,6 +81,27 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
         id: 'parking-orbit',
         title: 'Órbita de estacionamiento',
         description: 'Recorre la órbita de estacionamiento de Apollo 11 alrededor de la Tierra.',
+        narrative: [
+          [
+            { text: 'Una ' },
+            { text: 'ventana de lanzamiento', emphasis: true },
+            {
+              text: ' es el tiempo donde una nave puede despegar y cumplir los objetivos propuestos.',
+            },
+          ],
+          [
+            { text: 'La ventana del Apolo 11 fue de aproximadamente ' },
+            { text: '4 horas', emphasis: true },
+            {
+              text: ', desde las 9:22 a las 13:54, por lo que salió justo al inicio de la ventana.',
+            },
+          ],
+          [
+            {
+              text: 'Elegirla depende de la posición de la Luna, el Sol, los otros planetas, el giro de la Tierra, la iluminación y el combustible, entre otros factores.',
+            },
+          ],
+        ],
         trajectory: {
           segments: [
             {
@@ -110,6 +135,24 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
         id: 'lunar-exploration',
         title: 'Exploración lunar',
         description: 'Explora Tranquility Base, el lugar exacto donde alunizó Apollo 11.',
+        narrative: [
+          [
+            { text: 'Perder la ' },
+            { text: 'ventana de lanzamiento', emphasis: true },
+            {
+              text: ' puede significar reprogramar la misión para mucho tiempo después, que puede implicar un gran costo económico.',
+            },
+          ],
+          [
+            {
+              text: 'Por ejemplo, la misión InSight a Marte perdió su ventana por una fuga en uno de los instrumentos científicos, retrasando 26 meses su lanzamiento.',
+            },
+          ],
+        ],
+        image: {
+          src: '/insight-mars-solar-panels.jpg',
+          alt: 'Preparación del aterrizador InSight con sus paneles solares desplegados en una sala limpia.',
+        },
         marker: {
           location: {
             body: 'moon',

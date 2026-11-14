@@ -90,6 +90,14 @@ function MissionPanel({ mission, currentStepIndex, onStepChange }: MissionPanelP
               ))}
             </div>
           )}
+          {currentStep.image && (
+            <img
+              className="mission-narrative-image"
+              src={currentStep.image.src}
+              alt={currentStep.image.alt}
+              loading="lazy"
+            />
+          )}
         </div>
 
         <footer className="mission-sidebar-footer">
