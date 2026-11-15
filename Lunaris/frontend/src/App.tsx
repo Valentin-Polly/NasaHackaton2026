@@ -381,10 +381,7 @@ function App() {
               SISTEMA SOLAR <span className="welcome-divider">/</span> SIMULADOR 3D
             </p>
             <p className="welcome-index">EXPLORACIÓN INTERACTIVA</p>
-            <h1 id="welcome-title">
-              PLACEHOLDER
-              <span>SIMULADOR :)</span>
-            </h1>
+            <h1 id="welcome-title">LUNARIS</h1>
             <p className="welcome-description">
               Una experiencia interactiva para explorar nuestro sistema solar.
             </p>

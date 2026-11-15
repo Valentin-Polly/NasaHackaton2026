@@ -135,7 +135,7 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
             body: 'earth',
             coordinates: kennedyLaunchCoordinates,
           },
-          label: 'Abrir galería placeholder de Apollo 11 en Florida',
+          label: 'Abrir galería del lanzamiento de Apolo 11 en Florida',
           gallery: apollo11FloridaGallery,
         },
       },

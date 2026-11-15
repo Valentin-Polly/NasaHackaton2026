@@ -1,6 +1,6 @@
 Ver simulacion en la web:
 
-cd ./placeholder-simulator/frontend
+cd ./Lunaris/frontend
 npm install
 npm run dev
 
