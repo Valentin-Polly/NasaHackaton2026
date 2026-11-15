@@ -11,7 +11,8 @@ type CelestialMarkerProps = {
   center: Position
   radius: number
   label: string
-  onActivate: () => void
+  onActivate?: () => void
+  variant?: 'winner' | 'alternative'
 } & CelestialMarkerLocation
 
 function CelestialMarker(props: CelestialMarkerProps) {
@@ -53,13 +54,13 @@ function CelestialMarker(props: CelestialMarkerProps) {
     <Html center position={position} zIndexRange={[2, 0]}>
       <button
         ref={markerElement}
-        className="celestial-marker"
+        className={`celestial-marker${props.variant ? ` celestial-marker--${props.variant}` : ''}`}
         type="button"
         aria-label={props.label}
         onPointerDown={(event) => event.stopPropagation()}
         onClick={(event) => {
           event.stopPropagation()
-          props.onActivate()
+          props.onActivate?.()
         }}
       >
         <span className="celestial-marker-face">

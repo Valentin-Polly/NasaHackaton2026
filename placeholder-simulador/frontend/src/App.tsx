@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, useGLTF, useTexture } from '@react-three/drei'
 import { DepthOfField, EffectComposer } from '@react-three/postprocessing'
@@ -11,6 +11,8 @@ import MissionPanel from './MissionPanel'
 import PhotoGallery from './PhotoGallery'
 import type { PhotoGalleryData } from './gallery-data'
 import { missionSequence } from './mission-sequence'
+import { capeCanaveralLocalTimeToUtc, optimizeLunarLanding } from './lunarOptimizer'
+import type { Trajectory } from './trajectory-types'
 import './App.css'
 
 type Position = [number, number, number]
@@ -34,6 +36,36 @@ const CELESTIAL_BODY_SURFACES: Record<
   earth: { center: EARTH_POSITION, radius: EARTH_RADIUS },
   moon: { center: MOON_POSITION, radius: MOON_RADIUS },
   sun: { center: SUN_POSITION, radius: SUN_RADIUS },
+}
+
+function getSunPosition(date: Date): Position {
+  const referenceDate = Date.UTC(2027, 0, 1)
+  const annualAngle = ((date.getTime() - referenceDate) / (365.25 * 24 * 60 * 60 * 1_000))
+    * Math.PI * 2
+  const cosine = Math.cos(annualAngle)
+  const sine = Math.sin(annualAngle)
+
+  return [
+    SUN_POSITION[0] * cosine + SUN_POSITION[2] * sine,
+    SUN_POSITION[1],
+    -SUN_POSITION[0] * sine + SUN_POSITION[2] * cosine,
+  ]
+}
+
+function getSurfacePosition(
+  center: Position,
+  radius: number,
+  latitude: number,
+  longitude: number,
+): Position {
+  const latitudeRadians = (latitude * Math.PI) / 180
+  const longitudeRadians = (longitude * Math.PI) / 180
+
+  return [
+    center[0] + Math.cos(latitudeRadians) * Math.cos(longitudeRadians) * radius * 1.01,
+    center[1] + Math.sin(latitudeRadians) * radius * 1.01,
+    center[2] - Math.cos(latitudeRadians) * Math.sin(longitudeRadians) * radius * 1.01,
+  ]
 }
 
 function Skybox() {
@@ -96,13 +128,17 @@ function Moon({ onSelect, onHoverChange }: BodyInteractionProps) {
   )
 }
 
-function Sun({ onSelect, onHoverChange }: BodyInteractionProps) {
+function Sun({
+  onSelect,
+  onHoverChange,
+  position,
+}: BodyInteractionProps & { position: Position }) {
   const texture = useTexture('/euvi_aia304_2012_carrington_print.jpg')
   texture.colorSpace = SRGBColorSpace
 
   return (
     <mesh
-      position={SUN_POSITION}
+      position={position}
       onClick={(event) => {
         event.stopPropagation()
         onSelect()
@@ -173,12 +209,53 @@ function App() {
   const [hoveringBody, setHoveringBody] = useState(false)
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [activeGallery, setActiveGallery] = useState<PhotoGalleryData | null>(null)
+  const [launchDateTime, setLaunchDateTime] = useState('2027-01-01T00:00')
+  const optimization = useMemo(() => {
+    if (!launchDateTime) return null
+
+    const departureDate = capeCanaveralLocalTimeToUtc(launchDateTime)
+    if (!departureDate) return null
+
+    return optimizeLunarLanding(departureDate)
+  }, [launchDateTime])
+  const arrivalDate = optimization
+    ? new Date(optimization.optimalSite.optimalLandingUtc)
+    : new Date('2027-01-01T00:00:00.000Z')
+  const sunPosition = getSunPosition(arrivalDate)
   const mission = missionSequence[0]
   const activeStep = mission.steps[currentStepIndex]
   const activeMarker = activeStep.marker
   const markerSurface = activeMarker
     ? CELESTIAL_BODY_SURFACES[activeMarker.location.body]
     : null
+  const dynamicTrajectory = useMemo<Trajectory | null>(() => {
+    if (!optimization) return null
+
+    const launchPoint = getSurfacePosition(
+      EARTH_POSITION,
+      EARTH_RADIUS,
+      28.6083,
+      -80.6041,
+    )
+    const landingPoint = getSurfacePosition(
+      MOON_POSITION,
+      MOON_RADIUS,
+      optimization.optimalSite.latitude,
+      optimization.optimalSite.longitude,
+    )
+
+    return {
+      segments: [{
+        type: 'curve',
+        points: [launchPoint, [3.75, 2.4, 0], landingPoint],
+        color: '#c4ff00',
+      }],
+    }
+  }, [optimization])
+  const currentMarkerMatchesWinner = activeMarker?.location.body === 'moon'
+    && optimization !== null
+    && activeMarker.location.coordinates.selenographicLatitude === optimization.optimalSite.latitude
+    && activeMarker.location.coordinates.selenographicLongitude === optimization.optimalSite.longitude
 
   const handleStepChange = (index: number) => {
     setCurrentStepIndex(index)
@@ -207,7 +284,7 @@ function App() {
           <Skybox />
           {/* Ajusta estas intensidades: pointLight controla la luz del Sol y ambientLight el brillo de relleno. */}
           <ambientLight intensity={1} />
-          <pointLight position={SUN_POSITION} color="#fff1d6" intensity={500} decay={2} />
+          <pointLight position={sunPosition} color="#fff1d6" intensity={500} decay={2} />
           <Earth
             onSelect={() => setCameraFocus({ position: EARTH_POSITION, distance: 5.6, minDistance: 2 })}
             onHoverChange={setHoveringBody}
@@ -215,21 +292,47 @@ function App() {
           {started && activeStep.trajectory && (
             <TrajectoryPath trajectory={activeStep.trajectory} surfaces={CELESTIAL_BODY_SURFACES} />
           )}
+          {started && dynamicTrajectory && (
+            <TrajectoryPath trajectory={dynamicTrajectory} surfaces={CELESTIAL_BODY_SURFACES} />
+          )}
           {started && activeMarker && markerSurface && (
             <CelestialMarker
               {...activeMarker.location}
               center={markerSurface.center}
               radius={markerSurface.radius}
               label={activeMarker.label}
+              variant={currentMarkerMatchesWinner ? 'winner' : undefined}
               onActivate={() => setActiveGallery(activeMarker.gallery)}
             />
           )}
+          {started && optimization?.ranking.slice(0, 6).map((site, index) => {
+            const isCurrentMarker = activeMarker?.location.body === 'moon'
+              && activeMarker.location.coordinates.selenographicLatitude === site.latitude
+              && activeMarker.location.coordinates.selenographicLongitude === site.longitude
+            if (isCurrentMarker) return null
+
+            return (
+              <CelestialMarker
+                key={site.siteId}
+                body="moon"
+                coordinates={{
+                  selenographicLatitude: site.latitude,
+                  selenographicLongitude: site.longitude,
+                }}
+                center={MOON_POSITION}
+                radius={MOON_RADIUS}
+                label={`${index === 0 ? 'Sitio óptimo' : `Alternativa ${index}`}: ${site.name}`}
+                variant={index === 0 ? 'winner' : 'alternative'}
+              />
+            )
+          })}
           <Moon
             onSelect={() => setCameraFocus({ position: MOON_POSITION, distance: 3, minDistance: 2 })}
             onHoverChange={setHoveringBody}
           />
           <Sun
-            onSelect={() => setCameraFocus({ position: SUN_POSITION, distance: 22.5, minDistance: 8 })}
+            position={sunPosition}
+            onSelect={() => setCameraFocus({ position: sunPosition, distance: 22.5, minDistance: 8 })}
             onHoverChange={setHoveringBody}
           />
           <SceneControls focus={cameraFocus} />
@@ -278,6 +381,9 @@ function App() {
           mission={mission}
           currentStepIndex={currentStepIndex}
           onStepChange={handleStepChange}
+          launchDateTime={launchDateTime}
+          onLaunchDateTimeChange={setLaunchDateTime}
+          optimization={optimization}
         />
       )}
 
