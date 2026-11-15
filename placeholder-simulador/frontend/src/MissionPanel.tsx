@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { MissionDefinition } from './mission-sequence'
 
 type MissionPanelProps = {
@@ -7,6 +7,7 @@ type MissionPanelProps = {
   onStepChange: (index: number) => void
   onPreviousMission: () => void
   onNextMission: () => void
+  onCompleteMissions: () => void
   hasPreviousMission: boolean
   hasNextMission: boolean
 }
@@ -17,14 +18,20 @@ function MissionPanel({
   onStepChange,
   onPreviousMission,
   onNextMission,
+  onCompleteMissions,
   hasPreviousMission,
   hasNextMission,
 }: MissionPanelProps) {
   const [sidebarVisible, setSidebarVisible] = useState(true)
+  const sidebarContentRef = useRef<HTMLDivElement>(null)
   const currentStep = mission.steps[currentStepIndex]
   const isLastStep = currentStepIndex === mission.steps.length - 1
 
   const isFirstStep = currentStepIndex === 0
+
+  useEffect(() => {
+    sidebarContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [mission, currentStepIndex])
 
   return (
     <div className={`mission-panel${sidebarVisible ? '' : ' mission-panel--hidden'}`}>
@@ -39,7 +46,7 @@ function MissionPanel({
           SISTEMA SOLAR
         </p>
 
-        <div className="mission-sidebar-content">
+        <div ref={sidebarContentRef} className="mission-sidebar-content">
           <p className="mission-sidebar-index">{mission.protocol}</p>
           <h2 id="mission-sidebar-title" className="mission-sidebar-title">
             {mission.title}
@@ -69,34 +76,6 @@ function MissionPanel({
               aria-valuetext={`Paso ${currentStepIndex + 1} de ${mission.steps.length}`}
             >
               <span style={{ width: `${((currentStepIndex + 1) / mission.steps.length) * 100}%` }} />
-            </div>
-            <div className="mission-step-navigation">
-              <button
-                type="button"
-                disabled={isFirstStep && !hasPreviousMission}
-                onClick={() => {
-                  if (isFirstStep) {
-                    onPreviousMission()
-                  } else {
-                    onStepChange(currentStepIndex - 1)
-                  }
-                }}
-              >
-                {isFirstStep && hasPreviousMission ? '← MISIÓN ANTERIOR' : '← ANTERIOR'}
-              </button>
-              <button
-                type="button"
-                disabled={isLastStep && !hasNextMission}
-                onClick={() => {
-                  if (isLastStep) {
-                    onNextMission()
-                  } else {
-                    onStepChange(currentStepIndex + 1)
-                  }
-                }}
-              >
-                {isLastStep && hasNextMission ? 'SIGUIENTE MISIÓN →' : 'SIGUIENTE →'}
-              </button>
             </div>
           </section>
 
@@ -131,6 +110,39 @@ function MissionPanel({
               )}
             </figure>
           )}
+          <nav className="mission-step-navigation" aria-label="Navegación de misión">
+            <button
+              type="button"
+              disabled={isFirstStep && !hasPreviousMission}
+              onClick={() => {
+                if (isFirstStep) {
+                  onPreviousMission()
+                } else {
+                  onStepChange(currentStepIndex - 1)
+                }
+              }}
+            >
+              {isFirstStep && hasPreviousMission ? '← MISIÓN ANTERIOR' : '← ANTERIOR'}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (isLastStep) {
+                  if (hasNextMission) {
+                    onNextMission()
+                  } else {
+                    onCompleteMissions()
+                  }
+                } else {
+                  onStepChange(currentStepIndex + 1)
+                }
+              }}
+            >
+              {isLastStep
+                ? hasNextMission ? 'SIGUIENTE MISIÓN →' : 'INICIAR QUIZ →'
+                : 'SIGUIENTE →'}
+            </button>
+          </nav>
         </div>
 
         <footer className="mission-sidebar-footer">

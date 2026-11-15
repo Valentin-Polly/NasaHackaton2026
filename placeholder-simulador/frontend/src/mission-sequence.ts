@@ -99,7 +99,7 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
     protocol: 'MISIÓN / APOLLO 11',
     title: 'EL PRIMER',
     titleHighlight: 'ALUNIZAJE',
-    summary: 'Sigue la misión desde su punto de lanzamiento el Mar de la Tranquilidad.',
+    summary: 'Scrolleá para ver más información.',
     steps: [
       {
         id: 'florida-launch',
@@ -539,6 +539,10 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
         image: {
           src: '/apollo15-muestra-lunar.jpg',
           alt: 'Muestra de roca lunar recolectada durante la misión Apollo 15.',
+          caption: {
+            title: 'Basalto lunar:',
+            text: 'Muestra 15486, recolectada en Dune durante el Apolo 15.',
+          },
         },
         marker: {
           location: {

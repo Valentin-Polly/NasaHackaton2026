@@ -8,8 +8,10 @@ import type { Mesh } from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import CelestialMarker from './CelestialMarker'
 import type { CelestialMarkerLocation } from './celestial-marker-types'
+import { CelestialMarkerIcon, EarthMarkerIcon } from './mission-marker-icons'
 import TrajectoryPath from './TrajectoryPath'
 import MissionPanel from './MissionPanel'
+import MissionQuiz from './MissionQuiz'
 import PhotoGallery from './PhotoGallery'
 import type { PhotoGalleryData } from './gallery-data'
 import { missionSequence } from './mission-sequence'
@@ -29,6 +31,16 @@ const MOON_POSITION: Position = [7.5, 0, 0]
 const MOON_RADIUS = 0.375
 const SUN_POSITION: Position = [-12, 5, -14]
 const SUN_RADIUS = 7.5
+const EARTH_CAMERA_FOCUS: CameraFocusTarget = {
+  position: EARTH_POSITION,
+  distance: 5.6,
+  minDistance: 2,
+}
+const MOON_CAMERA_FOCUS: CameraFocusTarget = {
+  position: MOON_POSITION,
+  distance: 3,
+  minDistance: 2,
+}
 const CELESTIAL_BODY_SURFACES: Record<
   CelestialMarkerLocation['body'],
   { center: Position; radius: number }
@@ -101,24 +113,12 @@ function Moon({ onSelect, onHoverChange, meshRef }: BodyInteractionProps) {
   )
 }
 
-function Sun({ onSelect, onHoverChange, meshRef }: BodyInteractionProps) {
+function Sun({ meshRef }: { meshRef: RefObject<Mesh> }) {
   const texture = useTexture('/euvi_aia304_2012_carrington_print.jpg')
   texture.colorSpace = SRGBColorSpace
 
   return (
-    <mesh
-      ref={meshRef}
-      position={SUN_POSITION}
-      onClick={(event) => {
-        event.stopPropagation()
-        onSelect()
-      }}
-      onPointerOver={(event) => {
-        event.stopPropagation()
-        onHoverChange(true)
-      }}
-      onPointerOut={() => onHoverChange(false)}
-    >
+    <mesh ref={meshRef} position={SUN_POSITION}>
       <sphereGeometry args={[SUN_RADIUS, 64, 64]} />
       <meshBasicMaterial map={texture} />
     </mesh>
@@ -181,6 +181,7 @@ function App() {
   const [currentMissionIndex, setCurrentMissionIndex] = useState(0)
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [activeGallery, setActiveGallery] = useState<PhotoGalleryData | null>(null)
+  const [quizOpen, setQuizOpen] = useState(false)
   const earthMeshRef = useRef<Mesh>(null!)
   const moonMeshRef = useRef<Mesh>(null!)
   const sunMeshRef = useRef<Mesh>(null!)
@@ -200,7 +201,30 @@ function App() {
         : [earthMeshRef, moonMeshRef]
     : []
 
+  const focusCameraOn = (target: CameraFocusTarget) => {
+    const focusedPosition = cameraFocus?.position ?? EARTH_POSITION
+    if (focusedPosition.every((coordinate, index) => coordinate === target.position[index])) {
+      return
+    }
+
+    setCameraFocus(target)
+  }
+
+  const focusForStep = (index: number) => {
+    if (index === 0) {
+      focusCameraOn(EARTH_CAMERA_FOCUS)
+    } else if (index === 2) {
+      focusCameraOn(MOON_CAMERA_FOCUS)
+    }
+  }
+
+  const handleStartExploration = () => {
+    setStarted(true)
+    focusForStep(0)
+  }
+
   const handleStepChange = (index: number) => {
+    focusForStep(index)
     setCurrentStepIndex(index)
     setActiveGallery(null)
   }
@@ -209,15 +233,23 @@ function App() {
     if (!hasNextMission) return
     setCurrentMissionIndex((index) => index + 1)
     setCurrentStepIndex(0)
+    focusForStep(0)
     setActiveGallery(null)
   }
 
   const handlePreviousMission = () => {
     if (!hasPreviousMission) return
     const previousMissionIndex = currentMissionIndex - 1
+    const previousStepIndex = missionSequence[previousMissionIndex].steps.length - 1
     setCurrentMissionIndex(previousMissionIndex)
-    setCurrentStepIndex(missionSequence[previousMissionIndex].steps.length - 1)
+    setCurrentStepIndex(previousStepIndex)
+    focusForStep(previousStepIndex)
     setActiveGallery(null)
+  }
+
+  const handleCompleteMissions = () => {
+    setActiveGallery(null)
+    setQuizOpen(true)
   }
 
   return (
@@ -245,7 +277,7 @@ function App() {
           <pointLight position={SUN_POSITION} color="#fff1d6" intensity={500} decay={2} />
           <Earth
             meshRef={earthMeshRef}
-            onSelect={() => setCameraFocus({ position: EARTH_POSITION, distance: 5.6, minDistance: 2 })}
+            onSelect={() => focusCameraOn(EARTH_CAMERA_FOCUS)}
             onHoverChange={setHoveringBody}
           />
           {started && activeStep.trajectory && (
@@ -263,14 +295,10 @@ function App() {
           )}
           <Moon
             meshRef={moonMeshRef}
-            onSelect={() => setCameraFocus({ position: MOON_POSITION, distance: 3, minDistance: 2 })}
+            onSelect={() => focusCameraOn(MOON_CAMERA_FOCUS)}
             onHoverChange={setHoveringBody}
           />
-          <Sun
-            meshRef={sunMeshRef}
-            onSelect={() => setCameraFocus({ position: SUN_POSITION, distance: 22.5, minDistance: 8 })}
-            onHoverChange={setHoveringBody}
-          />
+          <Sun meshRef={sunMeshRef} />
           <SceneControls focus={cameraFocus} />
         </Canvas>
       </div>
@@ -296,7 +324,7 @@ function App() {
             <button
               className="launch-button"
               type="button"
-              onClick={() => setStarted(true)}
+              onClick={handleStartExploration}
             >
               <span>Comenzar exploración</span>
               <span className="launch-arrow" aria-hidden="true">→</span>
@@ -319,6 +347,7 @@ function App() {
           onStepChange={handleStepChange}
           onPreviousMission={handlePreviousMission}
           onNextMission={handleNextMission}
+          onCompleteMissions={handleCompleteMissions}
           hasPreviousMission={hasPreviousMission}
           hasNextMission={hasNextMission}
         />
@@ -343,7 +372,14 @@ function App() {
           <ul className="controls-hint-list">
             <li><strong>Explorar:</strong> arrastra con el mouse para girar y usa la rueda para acercar o alejar.</li>
             <li><strong>Enfocar:</strong> haz clic en un planeta para centrar la vista en él.</li>
-            <li><strong>Ver imágenes:</strong> haz clic en los marcadores; las imágenes disponibles corresponden al paso activo.</li>
+            <li>
+              <strong>Ver imágenes:</strong> haz clic en los marcadores
+              <span className="controls-hint-marker-icons" aria-hidden="true">
+                <EarthMarkerIcon size={14} strokeWidth={1.8} />
+                <CelestialMarkerIcon size={14} strokeWidth={1.8} />
+              </span>
+              ; las imágenes disponibles corresponden al paso activo.
+            </li>
           </ul>
         </aside>
       )}
@@ -355,6 +391,8 @@ function App() {
           onClose={() => setActiveGallery(null)}
         />
       )}
+
+      {started && quizOpen && <MissionQuiz />}
 
       {started && <p className="scene-hint">Arrastra para girar</p>}
     </main>
