@@ -43,3 +43,35 @@ export const apollo11MoonGallery: PhotoGalleryData = {
     },
   ],
 }
+
+export const apollo12FloridaGallery: PhotoGalleryData = {
+  title: 'APOLLO 12 / FLORIDA',
+  photos: [
+    {
+      src: '/apolo 12 tierra.jpg',
+      alt: 'Despegue del Saturn V de la misión Apollo 12 sobre la costa de Florida.',
+    },
+    {
+      src: '/apolo 12 2 tierra.jpg',
+      alt: 'La tripulación de Apollo 12 durante los preparativos de la misión.',
+    },
+    {
+      src: '/apolo 12 3 tierra.jpg',
+      alt: 'El cohete Saturn V de Apollo 12 en la plataforma de lanzamiento.',
+    },
+  ],
+}
+
+export const apollo12MoonGallery: PhotoGalleryData = {
+  title: 'APOLLO 12 / LUNA',
+  photos: [
+    {
+      src: '/apolo 12 luna.jpg',
+      alt: 'El módulo lunar de Apollo 12 se eleva desde la superficie de la Luna.',
+    },
+    {
+      src: '/apolo 12 luna 2.jpg',
+      alt: 'Un astronauta de Apollo 12 examina la sonda Surveyor 3 en la Luna.',
+    },
+  ],
+}

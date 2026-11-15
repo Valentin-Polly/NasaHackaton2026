@@ -400,20 +400,21 @@
 
 .mission-step-navigation {
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 6px;
   margin-top: 16px;
 }
 
 .mission-step-navigation button {
+  min-width: 0;
+  flex: 1 1 0;
   min-height: 34px;
-  padding: 0 9px;
+  padding: 0 4px;
   border: 1px solid #687044;
   background: transparent;
   color: #f4f4ec;
   cursor: pointer;
-  font: 700 9px/1 var(--mono, 'SFMono-Regular', Consolas, monospace);
-  letter-spacing: 0.06em;
+  font: 700 8px/1 var(--mono, 'SFMono-Regular', Consolas, monospace);
+  letter-spacing: 0.03em;
   transition:
     background 150ms ease,
     border-color 150ms ease,

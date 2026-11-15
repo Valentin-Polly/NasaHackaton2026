@@ -177,12 +177,15 @@ function App() {
   const [started, setStarted] = useState(false)
   const [cameraFocus, setCameraFocus] = useState<CameraFocusTarget | null>(null)
   const [hoveringBody, setHoveringBody] = useState(false)
+  const [currentMissionIndex, setCurrentMissionIndex] = useState(0)
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [activeGallery, setActiveGallery] = useState<PhotoGalleryData | null>(null)
   const earthMeshRef = useRef<Mesh>(null!)
   const moonMeshRef = useRef<Mesh>(null!)
   const sunMeshRef = useRef<Mesh>(null!)
-  const mission = missionSequence[0]
+  const mission = missionSequence[currentMissionIndex]
+  const hasPreviousMission = currentMissionIndex > 0
+  const hasNextMission = currentMissionIndex < missionSequence.length - 1
   const activeStep = mission.steps[currentStepIndex]
   const activeMarker = activeStep.marker
   const markerSurface = activeMarker
@@ -198,6 +201,21 @@ function App() {
 
   const handleStepChange = (index: number) => {
     setCurrentStepIndex(index)
+    setActiveGallery(null)
+  }
+
+  const handleNextMission = () => {
+    if (!hasNextMission) return
+    setCurrentMissionIndex((index) => index + 1)
+    setCurrentStepIndex(0)
+    setActiveGallery(null)
+  }
+
+  const handlePreviousMission = () => {
+    if (!hasPreviousMission) return
+    const previousMissionIndex = currentMissionIndex - 1
+    setCurrentMissionIndex(previousMissionIndex)
+    setCurrentStepIndex(missionSequence[previousMissionIndex].steps.length - 1)
     setActiveGallery(null)
   }
 
@@ -298,6 +316,10 @@ function App() {
           mission={mission}
           currentStepIndex={currentStepIndex}
           onStepChange={handleStepChange}
+          onPreviousMission={handlePreviousMission}
+          onNextMission={handleNextMission}
+          hasPreviousMission={hasPreviousMission}
+          hasNextMission={hasNextMission}
         />
       )}
 

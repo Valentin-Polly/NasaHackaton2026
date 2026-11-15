@@ -5,16 +5,26 @@ type MissionPanelProps = {
   mission: MissionDefinition
   currentStepIndex: number
   onStepChange: (index: number) => void
+  onPreviousMission: () => void
+  onNextMission: () => void
+  hasPreviousMission: boolean
+  hasNextMission: boolean
 }
 
-function MissionPanel({ mission, currentStepIndex, onStepChange }: MissionPanelProps) {
+function MissionPanel({
+  mission,
+  currentStepIndex,
+  onStepChange,
+  onPreviousMission,
+  onNextMission,
+  hasPreviousMission,
+  hasNextMission,
+}: MissionPanelProps) {
   const [sidebarVisible, setSidebarVisible] = useState(true)
   const currentStep = mission.steps[currentStepIndex]
   const isLastStep = currentStepIndex === mission.steps.length - 1
 
-  const selectStep = (index: number) => {
-    onStepChange(index)
-  }
+  const isFirstStep = currentStepIndex === 0
 
   return (
     <div className={`mission-panel${sidebarVisible ? '' : ' mission-panel--hidden'}`}>
@@ -32,8 +42,8 @@ function MissionPanel({ mission, currentStepIndex, onStepChange }: MissionPanelP
         <div className="mission-sidebar-content">
           <p className="mission-sidebar-index">{mission.protocol}</p>
           <h2 id="mission-sidebar-title" className="mission-sidebar-title">
-            EL PRIMER
-            <span>ALUNIZAJE</span>
+            {mission.title}
+            <span>{mission.titleHighlight}</span>
           </h2>
           <p className="mission-sidebar-description">{mission.summary}</p>
 
@@ -63,16 +73,29 @@ function MissionPanel({ mission, currentStepIndex, onStepChange }: MissionPanelP
             <div className="mission-step-navigation">
               <button
                 type="button"
-                disabled={currentStepIndex === 0}
-                onClick={() => selectStep(currentStepIndex - 1)}
+                disabled={isFirstStep && !hasPreviousMission}
+                onClick={() => {
+                  if (isFirstStep) {
+                    onPreviousMission()
+                  } else {
+                    onStepChange(currentStepIndex - 1)
+                  }
+                }}
               >
-                ← ANTERIOR
+                {isFirstStep && hasPreviousMission ? '← MISIÓN ANTERIOR' : '← ANTERIOR'}
               </button>
               <button
                 type="button"
-                onClick={() => selectStep(isLastStep ? 0 : currentStepIndex + 1)}
+                disabled={isLastStep && !hasNextMission}
+                onClick={() => {
+                  if (isLastStep) {
+                    onNextMission()
+                  } else {
+                    onStepChange(currentStepIndex + 1)
+                  }
+                }}
               >
-                {isLastStep ? 'REINICIAR' : 'SIGUIENTE →'}
+                {isLastStep && hasNextMission ? 'SIGUIENTE MISIÓN →' : 'SIGUIENTE →'}
               </button>
             </div>
           </section>
