@@ -107,3 +107,43 @@ export const apollo14MoonGallery: PhotoGalleryData = {
     },
   ],
 }
+
+export const apollo15FloridaGallery: PhotoGalleryData = {
+  title: 'APOLLO 15 / FLORIDA',
+  photos: [
+    {
+      src: '/APOLO 15 tierra 1.jpg',
+      alt: 'El cohete Saturn V de Apollo 15 en el complejo de lanzamiento del Centro Espacial Kennedy.',
+    },
+    {
+      src: '/apolo 15 tierra 2.webp',
+      alt: 'La tripulación de Apollo 15 junto a la cápsula de la misión.',
+    },
+    {
+      src: '/apolo 15 tierra 3.jpg',
+      alt: 'Controladores siguen la misión Apollo 15 desde el centro de control.',
+    },
+  ],
+}
+
+export const apollo15MoonGallery: PhotoGalleryData = {
+  title: 'APOLLO 15 / LUNA',
+  photos: [
+    {
+      src: '/apolo 15 luna 2.jpg',
+      alt: 'Un astronauta conduce el vehículo lunar por la superficie de la Luna.',
+    },
+    {
+      src: '/apolo 15 luna 3.webp',
+      alt: 'El vehículo lunar recorre el terreno montañoso de Hadley Rille.',
+    },
+    {
+      src: '/apolo 15 luna 4.jpg',
+      alt: 'El módulo lunar de Apollo 15 permanece en la superficie de la Luna.',
+    },
+    {
+      src: '/apolo 15 tluna 1.webp',
+      alt: 'La Tierra vista desde la superficie lunar durante Apollo 15.',
+    },
+  ],
+}

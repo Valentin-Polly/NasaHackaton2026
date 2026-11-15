@@ -8,6 +8,8 @@ import {
   apollo12MoonGallery,
   apollo14FloridaGallery,
   apollo14MoonGallery,
+  apollo15FloridaGallery,
+  apollo15MoonGallery,
 } from './gallery-data'
 
 export type MissionTextSegment = {
@@ -60,6 +62,16 @@ const apollo12LunarCoordinates = {
 const apollo14LunarCoordinates = {
   selenographicLatitude: -3.65,
   selenographicLongitude: -17.47,
+}
+
+const apollo15LaunchCoordinates = {
+  latitude: 28.6083,
+  longitude: -80.6041,
+}
+
+const apollo15LunarCoordinates = {
+  selenographicLatitude: 26.1322,
+  selenographicLongitude: 3.6339,
 }
 
 export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
@@ -357,11 +369,6 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
               text: ', una capa de polvo y fragmentos de roca producida principalmente por impactos de meteoritos.',
             },
           ],
-          [
-            {
-              text: 'La combinación de pendientes, suelo suelto y obstáculos puede dificultar el equilibrio, aumentar el esfuerzo físico y complicar la planificación de una ruta.',
-            },
-          ],
         ],
       },
       {
@@ -401,6 +408,127 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
           },
           label: 'Abrir galería de Apollo 14 en Fra Mauro',
           gallery: apollo14MoonGallery,
+        },
+      },
+    ],
+  },
+  {
+    id: 'apollo-15',
+    sequence: '04',
+    protocol: 'MISIÓN / APOLLO 15',
+    title: 'APOLO 15',
+    titleHighlight: 'CARRERA LUNAR',
+    summary: 'Una carrera contra el tiempo lunar.',
+    steps: [
+      {
+        id: 'apollo-15-lunar-day',
+        title: '¿Cuánto dura un día en la Luna?',
+        description: 'Descubre cuánto duran el día y la noche en la superficie lunar.',
+        narrative: [
+          [
+            {
+              text: 'El 26 de julio de 1971, el Apolo 15 despegó desde el Centro Espacial Kennedy con destino a Hadley Rille, una región rodeada de montañas y atravesada por una enorme grieta lunar.',
+            },
+          ],
+          [
+            {
+              text: 'Esta misión fue la primera en permanecer casi tres días terrestres sobre la superficie de la Luna.',
+            },
+          ],
+          [
+            { text: 'Pero ¿cuánto dura realmente un ' },
+            { text: 'día lunar', emphasis: true },
+            { text: '?' },
+          ],
+          [
+            {
+              text: 'Mientras que en la Tierra el ciclo entre dos amaneceres dura aproximadamente 24 horas, en la Luna dura 29,5 días terrestres.',
+            },
+          ],
+          [
+            {
+              text: 'Esto significa que un lugar de la superficie lunar puede experimentar aproximadamente 14 días de luz continua, seguidos de 14 días de oscuridad.',
+            },
+          ],
+        ],
+        marker: {
+          location: {
+            body: 'earth',
+            coordinates: apollo15LaunchCoordinates,
+          },
+          label: 'Abrir galería del lanzamiento de Apollo 15 desde la plataforma 39A',
+          gallery: apollo15FloridaGallery,
+        },
+      },
+      {
+        id: 'apollo-15-sun-position',
+        title: '¿Cómo cambió la posición del Sol durante la misión?',
+        description: 'Sigue el cambio de la iluminación lunar durante la exploración.',
+        narrative: [
+          [
+            {
+              text: 'Cuando el Apolo 15 aterrizó, el Sol estaba a tan solo 12,1° sobre el horizonte lunar.',
+            },
+          ],
+          [
+            { text: 'Durante las siguientes 67 horas, los astronautas realizaron tres caminatas y exploraron la superficie utilizando por primera vez un ' },
+            { text: 'vehículo lunar', emphasis: true },
+            { text: '.' },
+          ],
+          [
+            {
+              text: 'Mientras tanto, el Sol continuó ascendiendo lentamente hasta alcanzar casi 45° al momento del despegue.',
+            },
+          ],
+          [
+            {
+              text: 'Este cambio no solo modificó las sombras del terreno, sino también la cantidad de energía solar recibida por las superficies y sus temperaturas.',
+            },
+          ],
+          [
+            {
+              text: 'En la Luna, donde prácticamente no hay atmósfera que distribuya el calor, la exposición directa al Sol influye mucho sobre la temperatura del suelo y de los aparatos.',
+            },
+          ],
+        ],
+      },
+      {
+        id: 'apollo-15-lunar-night',
+        title: '¿Qué pasaría si una misión permaneciera durante la noche lunar?',
+        description: 'Explora cómo la oscuridad y el frío afectarían una misión lunar.',
+        narrative: [
+          [
+            {
+              text: 'Aunque los astronautas del Apolo 15 permanecieron casi 67 horas en la superficie, todavía faltaban aproximadamente 13 días terrestres para el siguiente atardecer cuando llegaron.',
+            },
+          ],
+          [
+            {
+              text: 'Sin embargo, quedarse durante toda la noche lunar habría sido un desafío enorme.',
+            },
+          ],
+          [
+            {
+              text: 'Durante unas dos semanas, el sitio de aterrizaje dejaría de recibir luz solar directa y las temperaturas de las superficies expuestas podrían descender considerablemente.',
+            },
+          ],
+          [
+            {
+              text: 'Esto dificultaría la generación de energía mediante paneles solares, dificultando la gestión de recursos en general.',
+            },
+          ],
+        ],
+        image: {
+          src: '/apollo15-muestra-lunar.jpg',
+          alt: 'Muestra de roca lunar recolectada durante la misión Apollo 15.',
+        },
+        marker: {
+          location: {
+            body: 'moon',
+            coordinates: apollo15LunarCoordinates,
+          },
+          label: 'Abrir galería de Apollo 15 en Hadley Rille',
+          gallery: apollo15MoonGallery,
         },
       },
     ],
