@@ -19,7 +19,7 @@ const quizQuestions: QuizQuestion[] = Array.from({ length: 6 }, (_, index) => ({
   correctOptionIndex: 0,
 }))
 
-type QuizPhase = 'answering' | 'retry-ready' | 'complete'
+type QuizPhase = 'answering' | 'complete'
 
 function MissionQuiz() {
   const [phase, setPhase] = useState<QuizPhase>('answering')
@@ -59,7 +59,7 @@ function MissionQuiz() {
       return
     }
 
-    setPhase(wrongQuestionIndices.length > 0 ? 'retry-ready' : 'complete')
+    setPhase('complete')
   }
 
   const retryIncorrectAnswers = () => {
@@ -150,23 +150,20 @@ function MissionQuiz() {
           </>
         )}
 
-        {phase === 'retry-ready' && (
-          <div className="quiz-result">
-            <h3>Reintenta las respuestas incorrectas</h3>
-            <p>
-              Quedan {wrongQuestionIndices.length} pregunta{wrongQuestionIndices.length === 1 ? '' : 's'} para volver a intentar.
-            </p>
-            <button className="quiz-action" type="button" onClick={retryIncorrectAnswers}>
-              REINTENTAR INCORRECTAS
-            </button>
-          </div>
-        )}
-
         {phase === 'complete' && (
           <div className="quiz-result">
-            <h3>¡Quiz completado!</h3>
-            <p>Terminaste todas las preguntas placeholder.</p>
-            <button className="quiz-action quiz-action--final" type="button" disabled>
+            <h3>{wrongQuestionIndices.length > 0 ? 'Quiz finalizado' : '¡Quiz completado!'}</h3>
+            <p>
+              {wrongQuestionIndices.length > 0
+                ? `Quedan ${wrongQuestionIndices.length} pregunta${wrongQuestionIndices.length === 1 ? '' : 's'} incorrecta${wrongQuestionIndices.length === 1 ? '' : 's'}. Podés reintentarlas o continuar.`
+                : 'Terminaste todas las preguntas placeholder.'}
+            </p>
+            {wrongQuestionIndices.length > 0 && (
+              <button className="quiz-action" type="button" onClick={retryIncorrectAnswers}>
+                REINTENTAR INCORRECTAS
+              </button>
+            )}
+            <button className="quiz-action quiz-action--final" type="button">
               SITIOS DEL ARTEMIS 3 Y 4
             </button>
           </div>
