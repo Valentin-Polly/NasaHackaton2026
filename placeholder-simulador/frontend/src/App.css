@@ -533,12 +533,26 @@
   color: #c4ff00;
 }
 
+.mission-narrative-figure {
+  margin: 18px 0 0;
+}
+
 .mission-narrative-image {
   display: block;
   width: 100%;
   height: auto;
-  margin-top: 18px;
   border: 1px solid #c4ff00;
+}
+
+.mission-image-caption {
+  margin: 8px 0 0;
+  color: #aeb19f;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.mission-image-caption strong {
+  color: #c4ff00;
 }
 
 .mission-sidebar-footer {

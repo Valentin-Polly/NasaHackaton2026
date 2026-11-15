@@ -147,3 +147,75 @@ export const apollo15MoonGallery: PhotoGalleryData = {
     },
   ],
 }
+
+export const apollo16FloridaGallery: PhotoGalleryData = {
+  title: 'APOLLO 16 / FLORIDA',
+  photos: [
+    {
+      src: '/apolo 16 tierra 1.jpg',
+      alt: 'El cohete Saturn V de Apollo 16 en la plataforma de lanzamiento.',
+    },
+    {
+      src: '/apolo 16 tierra 2.jpg',
+      alt: 'Despegue de la misión Apollo 16 desde el Centro Espacial Kennedy.',
+    },
+    {
+      src: '/apolo 16 tierra REGRESO.webp',
+      alt: 'La cápsula de Apollo 16 desciende en paracaídas durante su regreso a la Tierra.',
+    },
+  ],
+}
+
+export const apollo16MoonGallery: PhotoGalleryData = {
+  title: 'APOLLO 16 / LUNA',
+  photos: [
+    {
+      src: '/apolo 16 luna 1.jpg',
+      alt: 'La Tierra vista desde la superficie lunar durante Apollo 16.',
+    },
+    {
+      src: '/apolo 16 luna 2.jpg',
+      alt: 'Un astronauta de Apollo 16 explora el terreno lunar con el vehículo lunar.',
+    },
+    {
+      src: '/apolo 16 luna 3.jpg',
+      alt: 'Un astronauta de Apollo 16 camina por la superficie lunar.',
+    },
+  ],
+}
+
+export const apollo17FloridaGallery: PhotoGalleryData = {
+  title: 'APOLLO 17 / FLORIDA',
+  photos: [
+    {
+      src: '/apolo 17 tierra 1.jpg',
+      alt: 'El cohete Saturn V de Apollo 17 iluminado en la plataforma de lanzamiento.',
+    },
+    {
+      src: '/apolo 17 tierra 2.jpg',
+      alt: 'Despegue de Apollo 17 desde el Centro Espacial Kennedy.',
+    },
+    {
+      src: '/apolo 17 tierra 3.jpg',
+      alt: 'La tripulación de Apollo 17 posa junto al vehículo lunar antes de la misión.',
+    },
+  ],
+}
+
+export const apollo17MoonGallery: PhotoGalleryData = {
+  title: 'APOLLO 17 / LUNA',
+  photos: [
+    {
+      src: '/apolo 17 luna 1.jpg',
+      alt: 'La Tierra asoma sobre el horizonte del valle Taurus-Littrow.',
+    },
+    {
+      src: '/apolo 17 luna 2.jpg',
+      alt: 'Un astronauta de Apollo 17 examina una gran roca en la superficie lunar.',
+    },
+    {
+      src: '/apolo 17 luna 3.jpg',
+      alt: 'Un astronauta de Apollo 17 trabaja junto al módulo lunar en Taurus-Littrow.',
+    },
+  ],
+}

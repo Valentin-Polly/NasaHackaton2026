@@ -114,12 +114,22 @@ function MissionPanel({
             </div>
           )}
           {currentStep.image && (
-            <img
-              className="mission-narrative-image"
-              src={currentStep.image.src}
-              alt={currentStep.image.alt}
-              loading="lazy"
-            />
+            <figure className="mission-narrative-figure">
+              <img
+                className="mission-narrative-image"
+                src={currentStep.image.src}
+                alt={currentStep.image.alt}
+                loading="lazy"
+              />
+              {currentStep.image.caption && (
+                <figcaption className="mission-image-caption">
+                  <em>
+                    <strong>{currentStep.image.caption.title}</strong>{' '}
+                    {currentStep.image.caption.text}
+                  </em>
+                </figcaption>
+              )}
+            </figure>
           )}
         </div>
 

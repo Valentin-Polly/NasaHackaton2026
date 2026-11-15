@@ -10,6 +10,10 @@ import {
   apollo14MoonGallery,
   apollo15FloridaGallery,
   apollo15MoonGallery,
+  apollo16FloridaGallery,
+  apollo16MoonGallery,
+  apollo17FloridaGallery,
+  apollo17MoonGallery,
 } from './gallery-data'
 
 export type MissionTextSegment = {
@@ -25,6 +29,10 @@ export type MissionStep = {
   image?: {
     src: string
     alt: string
+    caption?: {
+      title: string
+      text: string
+    }
   }
   trajectory?: Trajectory
   marker?: {
@@ -64,7 +72,7 @@ const apollo14LunarCoordinates = {
   selenographicLongitude: -17.47,
 }
 
-const apollo15LaunchCoordinates = {
+const kennedyPlatform39ACoordinates = {
   latitude: 28.6083,
   longitude: -80.6041,
 }
@@ -72,6 +80,16 @@ const apollo15LaunchCoordinates = {
 const apollo15LunarCoordinates = {
   selenographicLatitude: 26.1322,
   selenographicLongitude: 3.6339,
+}
+
+const apollo16LunarCoordinates = {
+  selenographicLatitude: -8.9734,
+  selenographicLongitude: 15.5011,
+}
+
+const apollo17LunarCoordinates = {
+  selenographicLatitude: 20.1908,
+  selenographicLongitude: 30.7717,
 }
 
 export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
@@ -454,7 +472,7 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
         marker: {
           location: {
             body: 'earth',
-            coordinates: apollo15LaunchCoordinates,
+            coordinates: kennedyPlatform39ACoordinates,
           },
           label: 'Abrir galería del lanzamiento de Apollo 15 desde la plataforma 39A',
           gallery: apollo15FloridaGallery,
@@ -529,6 +547,214 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
           },
           label: 'Abrir galería de Apollo 15 en Hadley Rille',
           gallery: apollo15MoonGallery,
+        },
+      },
+    ],
+  },
+  {
+    id: 'apollo-16',
+    sequence: '05',
+    protocol: 'MISIÓN / APOLLO 16',
+    title: 'APOLO 16',
+    titleHighlight: 'TIERRAS ALTAS',
+    summary: 'Los secretos de las tierras altas lunares.',
+    steps: [
+      {
+        id: 'apollo-16-highlands',
+        title: '¿Por qué algunas regiones de la Luna son más claras que otras?',
+        description: 'Descubre qué diferencia a las tierras altas lunares.',
+        narrative: [
+          [
+            {
+              text: 'El 16 de abril de 1972, el Apolo 16 despegó desde el Centro Espacial Kennedy con destino a Descartes, una región de las ',
+            },
+            { text: 'tierras altas lunares', emphasis: true },
+            { text: '.' },
+          ],
+          [
+            {
+              text: 'Pero ¿qué diferencia a estas regiones de las grandes llanuras oscuras que observamos desde la Tierra?',
+            },
+          ],
+          [
+            {
+              text: 'La NASA eligió Descartes para estudiar estas tierras y comprender mejor cómo se formó la corteza de la Luna, ya que son más antiguas.',
+            },
+          ],
+        ],
+        marker: {
+          location: {
+            body: 'earth',
+            coordinates: kennedyPlatform39ACoordinates,
+          },
+          label: 'Abrir galería del lanzamiento de Apollo 16 desde la plataforma 39A',
+          gallery: apollo16FloridaGallery,
+        },
+      },
+      {
+        id: 'apollo-16-rocks',
+        title: '¿Qué pueden revelar las rocas sobre el pasado lunar?',
+        description: 'Conoce qué descubrieron las muestras de la región de Descartes.',
+        narrative: [
+          [
+            {
+              text: 'Antes de la misión, los científicos pensaban que algunas formaciones de Descartes se habían originado por actividad volcánica.',
+            },
+          ],
+          [
+            { text: 'Sin embargo, cuando los astronautas comenzaron a recolectar muestras, encontraron algo inesperado: la mayoría eran ' },
+            { text: 'brechas de impacto', emphasis: true },
+            {
+              text: ', rocas formadas por fragmentos de otras rocas que quedaron unidos después de impactos de meteoritos.',
+            },
+          ],
+          [
+            { text: 'También encontraron anortositas, rocas que forman parte de la antigua corteza lunar, demostrando que los ' },
+            { text: 'impactos de meteoritos', emphasis: true },
+            { text: ' tuvieron un papel muy importante en la formación del paisaje.' },
+          ],
+        ],
+      },
+      {
+        id: 'apollo-16-north-ray',
+        title: '¿Cómo podemos estudiar el interior de la Luna sin excavar?',
+        description: 'Explora cómo los cráteres dejan expuestas rocas del interior lunar.',
+        narrative: [
+          [
+            {
+              text: 'Durante su exploración, los astronautas del Apolo 16 visitaron las cercanías del cráter North Ray, de aproximadamente un kilómetro de diámetro y 230 metros de profundidad.',
+            },
+          ],
+          [
+            {
+              text: 'Pero ¿por qué visitar un cráter puede ayudarnos a conocer lo que hay debajo de la superficie?',
+            },
+          ],
+          [
+            {
+              text: 'Cuando un meteorito impacta contra la Luna, libera una enorme cantidad de energía y expulsa materiales que estaban enterrados a distintas profundidades.',
+            },
+          ],
+          [
+            {
+              text: 'Estos fragmentos quedan dispersos alrededor del cráter y permiten estudiar rocas que normalmente serían inaccesibles.',
+            },
+          ],
+          [
+            {
+              text: 'En North Ray, los astronautas pudieron recolectar muestras de este material expulsado.',
+            },
+          ],
+        ],
+        image: {
+          src: '/apollo16-lunar-mapping-camera.jpg',
+          alt: 'Cámara de cartografía lunar utilizada durante las misiones Apolo.',
+          caption: {
+            title: 'Lunar Mapping Camera:',
+            text: 'Sistema fotográfico utilizado en las misiones Apolo 15, 16 y 17 para cartografiar la superficie lunar desde la órbita.',
+          },
+        },
+        marker: {
+          location: {
+            body: 'moon',
+            coordinates: apollo16LunarCoordinates,
+          },
+          label: 'Abrir galería de Apollo 16 en Descartes',
+          gallery: apollo16MoonGallery,
+        },
+      },
+    ],
+  },
+  {
+    id: 'apollo-17',
+    sequence: '06',
+    protocol: 'MISIÓN / APOLLO 17',
+    title: 'APOLO 17',
+    titleHighlight: 'INTERIOR LUNAR',
+    summary: 'Explora los secretos del interior lunar y las variaciones de gravedad.',
+    steps: [
+      {
+        id: 'apollo-17-lunar-gravity',
+        title: '¿Por qué pesamos menos en la Luna?',
+        description: 'Compara la gravedad terrestre con la gravedad lunar.',
+        narrative: [
+          [
+            {
+              text: 'El 7 de diciembre de 1972, el Apolo 17 despegó desde el Centro Espacial Kennedy con destino al valle Taurus-Littrow, convirtiéndose en la última misión tripulada del programa Apolo en aterrizar en la Luna.',
+            },
+          ],
+          [
+            { text: 'La ' },
+            { text: 'gravedad lunar', emphasis: true },
+            {
+              text: ' es aproximadamente un 83 % menor que la terrestre. Esto significa que una persona que pesa 60 kg en la Tierra sentiría un peso equivalente al de unos 10 kg en la Luna.',
+            },
+          ],
+        ],
+        marker: {
+          location: {
+            body: 'earth',
+            coordinates: kennedyPlatform39ACoordinates,
+          },
+          label: 'Abrir galería del lanzamiento de Apollo 17 desde la plataforma 39A',
+          gallery: apollo17FloridaGallery,
+        },
+      },
+      {
+        id: 'apollo-17-gravity-anomalies',
+        title: '¿La gravedad es igual en toda la Luna?',
+        description: 'Descubre cómo las variaciones de gravedad revelan materiales bajo la superficie.',
+        narrative: [
+          [
+            {
+              text: 'Aunque solemos hablar de la gravedad lunar como un valor constante de 1,62 m/s², en realidad presenta pequeñas variaciones según la región.',
+            },
+          ],
+          [
+            {
+              text: 'Estas diferencias se relacionan con la elevación del terreno y la distribución de materiales bajo la superficie. Por ejemplo, una zona con rocas más densas puede producir una atracción gravitatoria ligeramente mayor.',
+            },
+          ],
+          [
+            { text: 'Estudiar estas diferencias, conocidas como ' },
+            { text: 'anomalías gravitatorias', emphasis: true },
+            {
+              text: ', permite obtener información sobre la estructura interna de la Luna, incluso de materiales que no podemos observar directamente.',
+            },
+          ],
+        ],
+      },
+      {
+        id: 'apollo-17-traverse-gravimeter',
+        title: '¿Cómo podemos descubrir qué hay debajo del suelo lunar?',
+        description: 'Conoce el gravímetro portátil usado durante los recorridos por Taurus-Littrow.',
+        narrative: [
+          [
+            {
+              text: 'Durante el Apolo 17, los astronautas utilizaron un instrumento llamado Traverse Gravimeter, un gravímetro portátil diseñado para medir pequeñas variaciones de gravedad en distintos puntos de la superficie.',
+            },
+          ],
+          [
+            {
+              text: 'El instrumento fue transportado en el vehículo lunar y permitió realizar mediciones durante los recorridos por el valle Taurus-Littrow.',
+            },
+          ],
+        ],
+        image: {
+          src: '/apollo17-traverse-gravimeter.jpg',
+          alt: 'El gravímetro Traverse del Apolo 17.',
+          caption: {
+            title: 'Gravímetro del Apolo 17:',
+            text: 'Instrumento utilizado para medir pequeñas variaciones de la gravedad lunar y estudiar la composición del subsuelo.',
+          },
+        },
+        marker: {
+          location: {
+            body: 'moon',
+            coordinates: apollo17LunarCoordinates,
+          },
+          label: 'Abrir galería de Apollo 17 en el valle Taurus-Littrow',
+          gallery: apollo17MoonGallery,
         },
       },
     ],
