@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/export-artemis-sites.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/export-artemis-sites.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

@@ -13,6 +13,7 @@ type CelestialMarkerProps = {
   label: string
   onActivate: () => void
   occluders: RefObject<Object3D>[]
+  active?: boolean
 } & CelestialMarkerLocation
 
 function CelestialMarker(props: CelestialMarkerProps) {
@@ -42,7 +43,7 @@ function CelestialMarker(props: CelestialMarkerProps) {
   return (
     <Html center occlude={props.occluders} position={position} zIndexRange={[2, 0]}>
       <button
-        className="celestial-marker"
+        className={`celestial-marker${props.active ? ' celestial-marker--active' : ''}`}
         type="button"
         aria-label={props.label}
         onPointerDown={(event) => event.stopPropagation()}

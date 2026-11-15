@@ -12,6 +12,9 @@ import { CelestialMarkerIcon, EarthMarkerIcon } from './mission-marker-icons'
 import TrajectoryPath from './TrajectoryPath'
 import MissionPanel from './MissionPanel'
 import MissionQuiz from './MissionQuiz'
+import ArtemisSitesPanel from './ArtemisSitesPanel'
+import { artemisSites } from './artemis-site-data'
+import type { ArtemisSite } from './artemis-site-data'
 import PhotoGallery from './PhotoGallery'
 import type { PhotoGalleryData } from './gallery-data'
 import { missionSequence } from './mission-sequence'
@@ -125,11 +128,24 @@ function Sun({ meshRef }: { meshRef: RefObject<Mesh> }) {
   )
 }
 
-function SceneControls({ focus }: { focus: CameraFocusTarget | null }) {
+function SceneControls({
+  focus,
+  allowLunarSurfaceZoom = false,
+}: {
+  focus: CameraFocusTarget | null
+  allowLunarSurfaceZoom?: boolean
+}) {
   const controls = useRef<OrbitControlsImpl | null>(null)
   const { camera } = useThree()
   const destinationPosition = useRef(new Vector3())
   const transitioning = useRef(false)
+  const isMoonFocused = focus?.position.every(
+    (coordinate, index) => coordinate === MOON_POSITION[index],
+  ) ?? false
+  const minDistance =
+    allowLunarSurfaceZoom && isMoonFocused
+      ? MOON_RADIUS + 0.1
+      : focus?.minDistance ?? 2
 
   useEffect(() => {
     const currentControls = controls.current
@@ -164,7 +180,7 @@ function SceneControls({ focus }: { focus: CameraFocusTarget | null }) {
       ref={controls}
       enablePan={false}
       enableZoom
-      minDistance={focus?.minDistance ?? 2}
+      minDistance={minDistance}
       maxDistance={40}
       onStart={() => {
         transitioning.current = false
@@ -182,6 +198,8 @@ function App() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [activeGallery, setActiveGallery] = useState<PhotoGalleryData | null>(null)
   const [quizOpen, setQuizOpen] = useState(false)
+  const [artemisSitesOpen, setArtemisSitesOpen] = useState(false)
+  const [selectedArtemisSite, setSelectedArtemisSite] = useState<ArtemisSite>(artemisSites[0])
   const earthMeshRef = useRef<Mesh>(null!)
   const moonMeshRef = useRef<Mesh>(null!)
   const sunMeshRef = useRef<Mesh>(null!)
@@ -252,6 +270,18 @@ function App() {
     setQuizOpen(true)
   }
 
+  const handleOpenArtemisSites = () => {
+    setActiveGallery(null)
+    setQuizOpen(false)
+    setShowControlsHint(false)
+    setSelectedArtemisSite(artemisSites[0])
+    setArtemisSitesOpen(true)
+  }
+
+  const handleSelectArtemisSite = (site: ArtemisSite) => {
+    setSelectedArtemisSite(site)
+  }
+
   return (
     <main className="scene">
       <div
@@ -283,7 +313,7 @@ function App() {
           {started && activeStep.trajectory && (
             <TrajectoryPath trajectory={activeStep.trajectory} surfaces={CELESTIAL_BODY_SURFACES} />
           )}
-          {started && activeMarker && markerSurface && (
+          {started && !artemisSitesOpen && activeMarker && markerSurface && (
             <CelestialMarker
               {...activeMarker.location}
               center={markerSurface.center}
@@ -293,13 +323,29 @@ function App() {
               onActivate={() => setActiveGallery(activeMarker.gallery)}
             />
           )}
+          {started && artemisSitesOpen && artemisSites.map((site) => (
+            <CelestialMarker
+              key={site.site_id}
+              body="moon"
+              coordinates={{
+                selenographicLatitude: site.center_lat_deg,
+                selenographicLongitude: site.center_lon_deg,
+              }}
+              center={MOON_POSITION}
+              radius={MOON_RADIUS}
+              label={`Seleccionar ${site.site_id}: ${site.name}`}
+              active={site.site_id === selectedArtemisSite.site_id}
+              occluders={[earthMeshRef, sunMeshRef]}
+              onActivate={() => handleSelectArtemisSite(site)}
+            />
+          ))}
           <Moon
             meshRef={moonMeshRef}
             onSelect={() => focusCameraOn(MOON_CAMERA_FOCUS)}
             onHoverChange={setHoveringBody}
           />
           <Sun meshRef={sunMeshRef} />
-          <SceneControls focus={cameraFocus} />
+          <SceneControls focus={cameraFocus} allowLunarSurfaceZoom={artemisSitesOpen} />
         </Canvas>
       </div>
 
@@ -340,7 +386,7 @@ function App() {
         </section>
       )}
 
-      {started && (
+      {started && !artemisSitesOpen && (
         <MissionPanel
           mission={mission}
           currentStepIndex={currentStepIndex}
@@ -353,7 +399,14 @@ function App() {
         />
       )}
 
-      {started && showControlsHint && (
+      {started && artemisSitesOpen && (
+        <ArtemisSitesPanel
+          selectedSite={selectedArtemisSite}
+          onSelectSite={handleSelectArtemisSite}
+        />
+      )}
+
+      {started && !artemisSitesOpen && showControlsHint && (
         <aside className="controls-hint" aria-labelledby="controls-hint-title">
           <div className="controls-hint-heading">
             <div>
@@ -392,7 +445,7 @@ function App() {
         />
       )}
 
-      {started && quizOpen && <MissionQuiz />}
+      {started && quizOpen && <MissionQuiz onOpenArtemis={handleOpenArtemisSites} />}
 
       {started && <p className="scene-hint">Arrastra para girar</p>}
     </main>

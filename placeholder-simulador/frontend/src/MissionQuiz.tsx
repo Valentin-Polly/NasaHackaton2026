@@ -38,12 +38,12 @@ const quizQuestions: QuizQuestion[] = [
     correctOptionIndex: 2,
   },
   {
-    prompt: '¿Cuál de los siguientes NO es un recurso importante para planificar una misión lunar?',
+    prompt: '¿Cuál de los siguientes NO es un recurso necesario para planificar una misión lunar?',
     options: [
       'Agua en forma de hielo.',
       'Energía solar.',
       'Oxígeno.',
-      'Aura.',
+      'Sanguches de milanesa.',
     ],
     correctOptionIndex: 3,
   },
@@ -71,7 +71,11 @@ const quizQuestions: QuizQuestion[] = [
 
 type QuizPhase = 'answering' | 'complete'
 
-function MissionQuiz() {
+type MissionQuizProps = {
+  onOpenArtemis: () => void
+}
+
+function MissionQuiz({ onOpenArtemis }: MissionQuizProps) {
   const [phase, setPhase] = useState<QuizPhase>('answering')
   const [questionIndices, setQuestionIndices] = useState(() =>
     quizQuestions.map((_, index) => index),
@@ -213,8 +217,8 @@ function MissionQuiz() {
                 REINTENTAR INCORRECTAS
               </button>
             )}
-            <button className="quiz-action quiz-action--final" type="button">
-              SITIOS DEL ARTEMIS 3 Y 4
+            <button className="quiz-action quiz-action--final" type="button" onClick={onOpenArtemis}>
+              SITIOS ARTEMIS III Y IV →
             </button>
           </div>
         )}
