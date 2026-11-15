@@ -72,10 +72,10 @@ const quizQuestions: QuizQuestion[] = [
 type QuizPhase = 'answering' | 'complete'
 
 type MissionQuizProps = {
-  onOpenArtemis: () => void
+  onOpenArtemisIntro: () => void
 }
 
-function MissionQuiz({ onOpenArtemis }: MissionQuizProps) {
+function MissionQuiz({ onOpenArtemisIntro }: MissionQuizProps) {
   const [phase, setPhase] = useState<QuizPhase>('answering')
   const [questionIndices, setQuestionIndices] = useState(() =>
     quizQuestions.map((_, index) => index),
@@ -217,8 +217,8 @@ function MissionQuiz({ onOpenArtemis }: MissionQuizProps) {
                 REINTENTAR INCORRECTAS
               </button>
             )}
-            <button className="quiz-action quiz-action--final" type="button" onClick={onOpenArtemis}>
-              SITIOS ARTEMIS III Y IV →
+            <button className="quiz-action quiz-action--final" type="button" onClick={onOpenArtemisIntro}>
+              CONOCER ARTEMIS →
             </button>
           </div>
         )}

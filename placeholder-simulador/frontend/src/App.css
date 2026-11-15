@@ -510,6 +510,31 @@
   margin-top: 24px;
 }
 
+.artemis-intro-copy {
+  margin-top: 22px;
+  color: #c7c9bd;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.artemis-intro-copy p {
+  margin: 0 0 14px;
+}
+
+.artemis-intro-copy p:last-child {
+  margin-bottom: 0;
+}
+
+.artemis-intro-copy strong {
+  color: #c4ff00;
+}
+
+.artemis-intro-prompt {
+  padding: 12px 14px;
+  border-left: 2px solid #c4ff00;
+  background: #11150b;
+}
+
 .mission-sidebar {
   position: absolute;
   inset: 0 auto 0 0;

@@ -12,6 +12,7 @@ import { CelestialMarkerIcon, EarthMarkerIcon } from './mission-marker-icons'
 import TrajectoryPath from './TrajectoryPath'
 import MissionPanel from './MissionPanel'
 import MissionQuiz from './MissionQuiz'
+import ArtemisIntro from './ArtemisIntro'
 import ArtemisSitesPanel from './ArtemisSitesPanel'
 import { artemisSites } from './artemis-site-data'
 import type { ArtemisSite } from './artemis-site-data'
@@ -198,6 +199,7 @@ function App() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [activeGallery, setActiveGallery] = useState<PhotoGalleryData | null>(null)
   const [quizOpen, setQuizOpen] = useState(false)
+  const [artemisIntroOpen, setArtemisIntroOpen] = useState(false)
   const [artemisSitesOpen, setArtemisSitesOpen] = useState(false)
   const [selectedArtemisSite, setSelectedArtemisSite] = useState<ArtemisSite>(artemisSites[0])
   const earthMeshRef = useRef<Mesh>(null!)
@@ -270,10 +272,15 @@ function App() {
     setQuizOpen(true)
   }
 
-  const handleOpenArtemisSites = () => {
+  const handleOpenArtemisIntro = () => {
     setActiveGallery(null)
     setQuizOpen(false)
+    setArtemisIntroOpen(true)
     setShowControlsHint(false)
+  }
+
+  const handleOpenArtemisSites = () => {
+    setArtemisIntroOpen(false)
     setSelectedArtemisSite(artemisSites[0])
     setArtemisSitesOpen(true)
   }
@@ -291,6 +298,7 @@ function App() {
     setCurrentStepIndex(0)
     setActiveGallery(null)
     setQuizOpen(false)
+    setArtemisIntroOpen(false)
     setArtemisSitesOpen(false)
     setSelectedArtemisSite(artemisSites[0])
   }
@@ -459,7 +467,9 @@ function App() {
         />
       )}
 
-      {started && quizOpen && <MissionQuiz onOpenArtemis={handleOpenArtemisSites} />}
+      {started && quizOpen && <MissionQuiz onOpenArtemisIntro={handleOpenArtemisIntro} />}
+
+      {started && artemisIntroOpen && <ArtemisIntro onContinue={handleOpenArtemisSites} />}
 
       {started && <p className="scene-hint">Arrastra para girar</p>}
     </main>
