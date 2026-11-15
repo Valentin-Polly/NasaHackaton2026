@@ -3,6 +3,7 @@ import type { PhotoGalleryData } from './gallery-data'
 import type { Trajectory } from './trajectory-types'
 import {
   apollo11FloridaGallery,
+  apollo11EarthParkingOrbitGallery,
   apollo11MoonGallery,
   apollo12FloridaGallery,
   apollo12MoonGallery,
@@ -60,6 +61,11 @@ const lunarMarkerCoordinates = {
 const kennedyLaunchCoordinates = {
   latitude: 28.5729,
   longitude: -80.649,
+}
+
+const marChiquitaCoordinates = {
+  latitude: -30.67296,
+  longitude: -62.53589,
 }
 
 const apollo12LunarCoordinates = {
@@ -185,6 +191,14 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
               controlPoint: [4.5, 0.3, 0],
             },
           ],
+        },
+        marker: {
+          location: {
+            body: 'earth',
+            coordinates: marChiquitaCoordinates,
+          },
+          label: 'Abrir imagen de la órbita terrestre de estacionamiento del Apolo 11',
+          gallery: apollo11EarthParkingOrbitGallery,
         },
       },
       {

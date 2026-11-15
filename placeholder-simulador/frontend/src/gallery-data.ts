@@ -26,6 +26,16 @@ export const apollo11FloridaGallery: PhotoGalleryData = {
   ],
 }
 
+export const apollo11EarthParkingOrbitGallery: PhotoGalleryData = {
+  title: 'APOLLO 11 / ÓRBITA TERRESTRE',
+  photos: [
+    {
+      src: '/apollo11-earth-parking-orbit.png',
+      alt: 'Definición ilustrada de la órbita terrestre de estacionamiento del Apolo 11.',
+    },
+  ],
+}
+
 export const apollo11MoonGallery: PhotoGalleryData = {
   title: 'APOLLO 11 / LUNA',
   photos: [

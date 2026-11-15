@@ -5,6 +5,7 @@ import type { ArtemisSite } from './artemis-site-data'
 type ArtemisSitesPanelProps = {
   selectedSite: ArtemisSite
   onSelectSite: (site: ArtemisSite) => void
+  onReturnToStart: () => void
 }
 
 const numberFormatter = new Intl.NumberFormat('es-AR', {
@@ -37,7 +38,11 @@ function getSourceLabel(source: string) {
   return source.replace('NASA Artemis III Selection', 'Selección de sitios Artemis III de NASA')
 }
 
-function ArtemisSitesPanel({ selectedSite, onSelectSite }: ArtemisSitesPanelProps) {
+function ArtemisSitesPanel({
+  selectedSite,
+  onSelectSite,
+  onReturnToStart,
+}: ArtemisSitesPanelProps) {
   const [sidebarVisible, setSidebarVisible] = useState(true)
 
   return (
@@ -157,6 +162,14 @@ function ArtemisSitesPanel({ selectedSite, onSelectSite }: ArtemisSitesPanelProp
               Fuente: {getSourceLabel(selectedSite.data_source)}.
             </p>
           </section>
+          <button
+            className="artemis-return-button"
+            type="button"
+            onClick={onReturnToStart}
+          >
+            <span aria-hidden="true">↺</span>
+            VOLVER AL MENÚ DE INICIO
+          </button>
         </div>
 
         <footer className="mission-sidebar-footer">

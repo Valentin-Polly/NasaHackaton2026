@@ -878,6 +878,36 @@
   line-height: 1.5;
 }
 
+.artemis-return-button {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 20px;
+  padding: 8px 12px;
+  border: 1px solid #c4ff00;
+  background: #080a05;
+  color: #c4ff00;
+  cursor: pointer;
+  font: 700 10px/1.4 var(--mono, 'SFMono-Regular', Consolas, monospace);
+  letter-spacing: 0.05em;
+  transition:
+    background 150ms ease,
+    color 150ms ease;
+}
+
+.artemis-return-button:hover {
+  background: #c4ff00;
+  color: #080a05;
+}
+
+.artemis-return-button:focus-visible {
+  outline: 2px solid #f4f4ec;
+  outline-offset: 3px;
+}
+
 .mission-narrative {
   margin-top: 28px;
   color: #c7c9bd;

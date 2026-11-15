@@ -282,6 +282,19 @@ function App() {
     setSelectedArtemisSite(site)
   }
 
+  const handleReturnToStart = () => {
+    setStarted(false)
+    setShowControlsHint(true)
+    setCameraFocus({ ...EARTH_CAMERA_FOCUS })
+    setHoveringBody(false)
+    setCurrentMissionIndex(0)
+    setCurrentStepIndex(0)
+    setActiveGallery(null)
+    setQuizOpen(false)
+    setArtemisSitesOpen(false)
+    setSelectedArtemisSite(artemisSites[0])
+  }
+
   return (
     <main className="scene">
       <div
@@ -403,6 +416,7 @@ function App() {
         <ArtemisSitesPanel
           selectedSite={selectedArtemisSite}
           onSelectSite={handleSelectArtemisSite}
+          onReturnToStart={handleReturnToStart}
         />
       )}
 
