@@ -75,3 +75,35 @@ export const apollo12MoonGallery: PhotoGalleryData = {
     },
   ],
 }
+
+export const apollo14FloridaGallery: PhotoGalleryData = {
+  title: 'APOLLO 14 / TIERRA',
+  photos: [
+    {
+      src: '/apolo 14 1.jpg',
+      alt: 'Lanzamiento del Saturn V de Apollo 14 desde el Centro Espacial Kennedy.',
+    },
+    {
+      src: '/apolo 14 2.jpg',
+      alt: 'La tripulación de Apollo 14 junto a la nave de la misión.',
+    },
+    {
+      src: '/apolo 14 tierra 3.jpg',
+      alt: 'El equipo de control de misión de Apollo 14 en Houston.',
+    },
+  ],
+}
+
+export const apollo14MoonGallery: PhotoGalleryData = {
+  title: 'APOLLO 14 / LUNA',
+  photos: [
+    {
+      src: '/apolo 14 luna 1.webp',
+      alt: 'Un astronauta de Apollo 14 trabaja junto al carrito lunar en la superficie.',
+    },
+    {
+      src: '/apolo 14 luna 2.jpg',
+      alt: 'El módulo lunar de Apollo 14 en la superficie de la Luna.',
+    },
+  ],
+}

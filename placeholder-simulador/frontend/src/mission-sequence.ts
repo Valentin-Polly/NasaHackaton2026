@@ -6,6 +6,8 @@ import {
   apollo11MoonGallery,
   apollo12FloridaGallery,
   apollo12MoonGallery,
+  apollo14FloridaGallery,
+  apollo14MoonGallery,
 } from './gallery-data'
 
 export type MissionTextSegment = {
@@ -53,6 +55,11 @@ const kennedyLaunchCoordinates = {
 const apollo12LunarCoordinates = {
   selenographicLatitude: -3.01,
   selenographicLongitude: -23.42,
+}
+
+const apollo14LunarCoordinates = {
+  selenographicLatitude: -3.65,
+  selenographicLongitude: -17.47,
 }
 
 export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
@@ -277,6 +284,123 @@ export const missionSequence: [MissionDefinition, ...MissionDefinition[]] = [
           },
           label: 'Abrir galería del alunizaje de Apollo 12 junto a Surveyor 3',
           gallery: apollo12MoonGallery,
+        },
+      },
+    ],
+  },
+  {
+    id: 'apollo-14',
+    sequence: '03',
+    protocol: 'MISIÓN / APOLLO 14',
+    title: 'APOLO 14',
+    titleHighlight: 'FRA MAURO',
+    summary: 'El desafío de explorar las colinas de Fra Mauro.',
+    steps: [
+      {
+        id: 'apollo-14-fra-mauro',
+        title: '¿Por qué aterrizar en una región llena de colinas?',
+        description: 'Conoce por qué Apollo 14 exploró el terreno accidentado de Fra Mauro.',
+        narrative: [
+          [
+            {
+              text: 'El 31 de enero de 1971, el Apolo 14 despegó desde el Centro Espacial Kennedy con destino a Fra Mauro, una región lunar caracterizada por sus colinas, pendientes y numerosos cráteres; sus ',
+            },
+            { text: 'accidentes', emphasis: true },
+            { text: '.' },
+          ],
+          [
+            {
+              text: 'Pero ¿por qué la NASA eligió un terreno más accidentado que el de las misiones anteriores?',
+            },
+          ],
+          [
+            {
+              text: 'Los científicos creían que allí podían encontrar materiales expulsados durante el gigantesco impacto que formó el Mar de las Lluvias.',
+            },
+          ],
+          [
+            {
+              text: 'Estudiar estas rocas permitiría conocer mejor la historia geológica de la Luna, aunque significara explorar una región con mayores dificultades para aterrizar y desplazarse.',
+            },
+          ],
+        ],
+        marker: {
+          location: {
+            body: 'earth',
+            coordinates: kennedyLaunchCoordinates,
+          },
+          label: 'Abrir galería del lanzamiento de Apollo 14 desde Florida',
+          gallery: apollo14FloridaGallery,
+        },
+      },
+      {
+        id: 'apollo-14-terrain',
+        title: '¿Qué dificultades presenta el relieve lunar?',
+        description: 'Descubre cómo las pendientes, el regolito y los obstáculos afectan el recorrido.',
+        narrative: [
+          [
+            {
+              text: 'A diferencia de las grandes llanuras lunares, Fra Mauro presenta un terreno irregular, con desniveles, cráteres y pendientes que dificultan el desplazamiento.',
+            },
+          ],
+          [
+            { text: 'Una ' },
+            { text: 'pendiente', emphasis: true },
+            {
+              text: ' representa la inclinación de una superficie respecto de la horizontal. Cuanto mayor es, más difícil puede resultar atravesarla, especialmente si el suelo es inestable.',
+            },
+          ],
+          [
+            { text: 'Además, la superficie lunar está cubierta de ' },
+            { text: 'regolito', emphasis: true },
+            {
+              text: ', una capa de polvo y fragmentos de roca producida principalmente por impactos de meteoritos.',
+            },
+          ],
+          [
+            {
+              text: 'La combinación de pendientes, suelo suelto y obstáculos puede dificultar el equilibrio, aumentar el esfuerzo físico y complicar la planificación de una ruta.',
+            },
+          ],
+        ],
+      },
+      {
+        id: 'apollo-14-lost',
+        title: '¿Cómo es posible perderse en la Luna?',
+        description: 'Acompaña a Shepard y Mitchell en su recorrido hacia el cráter Cone.',
+        narrative: [
+          [
+            {
+              text: 'Durante la segunda caminata lunar, los astronautas Alan Shepard y Edgar Mitchell intentaron alcanzar el borde del cráter Cone para recolectar muestras geológicas.',
+            },
+          ],
+          [
+            { text: 'Sin embargo, el recorrido fue mucho más complicado de lo esperado.' },
+          ],
+          [
+            {
+              text: 'Los numerosos cráteres pequeños, las pendientes y la dificultad para reconocer puntos de referencia hicieron que los astronautas perdieran la orientación y avanzaran lentamente.',
+            },
+          ],
+          [
+            {
+              text: 'Aunque llegaron a estar a unas pocas decenas de metros del borde, tuvieron que regresar sin alcanzar su objetivo debido al tiempo y al oxígeno disponibles, sus ',
+            },
+            { text: 'recursos disponibles', emphasis: true },
+            { text: '.' },
+          ],
+        ],
+        image: {
+          src: '/apollo14-recursos-disponibles.jpg',
+          alt: 'Botellas de agua almacenadas, como ilustración de los recursos disponibles para una expedición.',
+        },
+        marker: {
+          location: {
+            body: 'moon',
+            coordinates: apollo14LunarCoordinates,
+          },
+          label: 'Abrir galería de Apollo 14 en Fra Mauro',
+          gallery: apollo14MoonGallery,
         },
       },
     ],

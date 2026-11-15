@@ -175,6 +175,7 @@ function SceneControls({ focus }: { focus: CameraFocusTarget | null }) {
 
 function App() {
   const [started, setStarted] = useState(false)
+  const [showControlsHint, setShowControlsHint] = useState(true)
   const [cameraFocus, setCameraFocus] = useState<CameraFocusTarget | null>(null)
   const [hoveringBody, setHoveringBody] = useState(false)
   const [currentMissionIndex, setCurrentMissionIndex] = useState(0)
@@ -321,6 +322,30 @@ function App() {
           hasPreviousMission={hasPreviousMission}
           hasNextMission={hasNextMission}
         />
+      )}
+
+      {started && showControlsHint && (
+        <aside className="controls-hint" aria-labelledby="controls-hint-title">
+          <div className="controls-hint-heading">
+            <div>
+              <p className="controls-hint-eyebrow">INICIO DE EXPLORACIÓN</p>
+              <h2 id="controls-hint-title">Cómo navegar</h2>
+            </div>
+            <button
+              className="controls-hint-close"
+              type="button"
+              aria-label="Cerrar instrucciones de navegación"
+              onClick={() => setShowControlsHint(false)}
+            >
+              ×
+            </button>
+          </div>
+          <ul className="controls-hint-list">
+            <li><strong>Explorar:</strong> arrastra con el mouse para girar y usa la rueda para acercar o alejar.</li>
+            <li><strong>Enfocar:</strong> haz clic en un planeta para centrar la vista en él.</li>
+            <li><strong>Ver imágenes:</strong> haz clic en los marcadores; las imágenes disponibles corresponden al paso activo.</li>
+          </ul>
+        </aside>
       )}
 
       {activeGallery && (
