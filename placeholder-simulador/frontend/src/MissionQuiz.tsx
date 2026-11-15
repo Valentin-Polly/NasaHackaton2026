@@ -1,23 +1,73 @@
 import { useState } from 'react'
 
-const placeholderOptions = [
-  'Opción placeholder A',
-  'Opción placeholder B',
-  'Opción placeholder C',
-  'Opción placeholder D',
-] as const
-
 type QuizQuestion = {
   prompt: string
-  options: typeof placeholderOptions
+  options: string[]
   correctOptionIndex: number
 }
 
-const quizQuestions: QuizQuestion[] = Array.from({ length: 6 }, (_, index) => ({
-  prompt: `Pregunta placeholder ${String(index + 1).padStart(2, '0')}`,
-  options: placeholderOptions,
-  correctOptionIndex: 0,
-}))
+const quizQuestions: QuizQuestion[] = [
+  {
+    prompt: '¿Por qué era importante que el Sol estuviera bajo sobre el horizonte durante los alunizajes?',
+    options: [
+      'Para que los astronautas no tuvieran calor.',
+      'Para observar mejor los cráteres y las formaciones del terreno.',
+      'Para que la Luna tuviera menos gravedad.',
+      'Para evitar que los meteoritos impactaran en la superficie.',
+    ],
+    correctOptionIndex: 1,
+  },
+  {
+    prompt: '¿Para qué se utilizaba una trayectoria híbrida en las misiones Apolo?',
+    options: [
+      'Para viajar más rápido que la luz.',
+      'Para evitar por completo el uso de combustible.',
+      'Para comenzar con una trayectoria de retorno libre y luego modificarla, permitiendo mayor flexibilidad para llegar a la Luna.',
+      'Para que la nave pudiera aterrizar sin utilizar sus motores.',
+    ],
+    correctOptionIndex: 2,
+  },
+  {
+    prompt: '¿Cómo se llama la capa de polvo y fragmentos de roca que cubre la superficie lunar?',
+    options: [
+      'Regalito.',
+      'Basalto.',
+      'Regolito.',
+      'Sedimento atmosférico.',
+    ],
+    correctOptionIndex: 2,
+  },
+  {
+    prompt: '¿Cuál de los siguientes NO es un recurso importante para planificar una misión lunar?',
+    options: [
+      'Agua en forma de hielo.',
+      'Energía solar.',
+      'Oxígeno.',
+      'Aura.',
+    ],
+    correctOptionIndex: 3,
+  },
+  {
+    prompt: '¿Qué fenómeno fue uno de los principales responsables de darle forma a la superficie lunar?',
+    options: [
+      'Las lluvias y los vientos.',
+      'Los impactos de asteroides y meteoritos.',
+      'Las corrientes oceánicas.',
+      'Las tormentas atmosféricas.',
+    ],
+    correctOptionIndex: 1,
+  },
+  {
+    prompt: '¿Cómo se llaman las pequeñas diferencias en la intensidad de la gravedad que existen entre distintas regiones de la Luna?',
+    options: [
+      'Fluctuaciones atmosféricas.',
+      'Ondas gravitacionales.',
+      'Anomalías gravitatorias.',
+      'Variaciones magnéticas.',
+    ],
+    correctOptionIndex: 2,
+  },
+]
 
 type QuizPhase = 'answering' | 'complete'
 
@@ -83,7 +133,7 @@ function MissionQuiz() {
         <p className="quiz-eyebrow">CIERRE DE LA EXPLORACIÓN</p>
         <h2 id="mission-quiz-title">Quiz final</h2>
         <p className="quiz-description">
-          Preguntas y respuestas placeholder; el contenido definitivo se agregará más adelante.
+          Poné a prueba lo aprendido durante las misiones Apolo.
         </p>
 
         {phase === 'answering' && (
@@ -156,7 +206,7 @@ function MissionQuiz() {
             <p>
               {wrongQuestionIndices.length > 0
                 ? `Quedan ${wrongQuestionIndices.length} pregunta${wrongQuestionIndices.length === 1 ? '' : 's'} incorrecta${wrongQuestionIndices.length === 1 ? '' : 's'}. Podés reintentarlas o continuar.`
-                : 'Terminaste todas las preguntas placeholder.'}
+                : 'Respondiste correctamente todas las preguntas.'}
             </p>
             {wrongQuestionIndices.length > 0 && (
               <button className="quiz-action" type="button" onClick={retryIncorrectAnswers}>
