@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "productName": "LUNARIS",
+  "productName": "Lunaris",
   "main": "electron/main.cjs",
   "scripts": {
     "predev": "node scripts/export-artemis-sites.mjs",
@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "electron:dev": "npm run build && electron .",
-    "dist:win": "npm run build && electron-builder --win nsis --x64"
+    "dist:win": "npm run build && electron-builder --win --x64"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
@@ -45,7 +45,7 @@
   },
   "build": {
     "appId": "org.lunaris.simulador",
-    "productName": "LUNARIS",
+    "productName": "Lunaris",
     "artifactName": "Lunaris-Setup.${ext}",
     "directories": {
       "output": "release"
@@ -65,6 +65,12 @@
           "arch": [
             "x64"
           ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
@@ -74,7 +80,10 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "LUNARIS"
+      "shortcutName": "Lunaris"
+    },
+    "portable": {
+      "artifactName": "Lunaris-Portable.exe"
     }
   },
   "allowScripts": {

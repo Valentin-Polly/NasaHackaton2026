@@ -89,7 +89,7 @@ async function openApp() {
     height: 900,
     minWidth: 960,
     minHeight: 640,
-    title: 'LUNARIS',
+    title: 'Lunaris',
     icon: path.join(__dirname, '..', 'build', 'icon.png'),
     webPreferences: {
       contextIsolation: true,
@@ -106,7 +106,7 @@ async function openApp() {
 
 app.whenReady().then(openApp).catch((error) => {
   console.error('Unable to start Lunaris:', error)
-  dialog.showErrorBox('No se pudo iniciar LUNARIS', error.message)
+  dialog.showErrorBox('No se pudo iniciar Lunaris', error.message)
   app.quit()
 })
 
